@@ -1,26 +1,104 @@
 {% extends 'base.html' %}
 
 {% block body %}
-
-<div class="container">
+{{g}}
+<div class="title-area">
     <h1>8-puzzle</h1>
-    <p>Solve the puzzle yourself (use arrow keys) or try the automatic solver</p>
-
-    <div class="board">
-        <div class="1">1</div>
-        <div class="2">2</div>
-        <div class="3">3</div>
-        <div class="4">4</div>
-        <div class="5">5</div>
-        <div class="6">6</div>
-        <div class="7">7</div>
-        <div class="8">8</div>
-        <div class="0">0</div>
-    </div>
-    
-    <input type="submit" value="move">
-    <input type="submit" value="solve/show solution details">
-    <input type="submit" value="new puzzle">
-    
+    <h4>Solve the puzzle yourself (use arrow keys) or try the automatic solver</h4>
+    <form action="/" method="post">
+        <input type="submit" value="New puzzle">
+    </form>
 </div>
+
+<div class="horizontal-flex-container">
+    <div class="vertical-flex-container">
+        <h3>Your solution</h3>
+        <div class="board">
+            {% for i in range(3) %}
+                {% for j in range(3) %}
+                    {% if human_puzzle[i][j]==0 %}
+                        <div class="zero-tile"></div>
+                    {% else %}
+                        <div>{{human_puzzle[i][j]}}</div>   
+                    {% endif %}
+                {%endfor %}
+            {% endfor %}
+        </div>
+
+
+        <p>Is solved: {{human_puzzle_is_solved}}</p>
+        <p>Number of moves in solution: {{human_cost}}</p> 
+    </div>
+    <div class="vertical-flex-container">
+            <h3>AI Solution</h3>
+            <div class="board">
+                {% for i in range(3) %}
+                    {% for j in range(3) %}
+                        {% if ai_puzzle[i][j]==0 %}
+                            <div class="zero-tile"></div>
+                        {% else %}
+                            <div>{{ai_puzzle[i][j]}}</div>   
+                        {% endif %}
+                    {%endfor %}
+                {% endfor %}
+            </div>
+
+            <form action="{{ url_for('solve') }}" method="post">
+                <input type="hidden" name="ai_puzzle" value="{{ai_puzzle}}">
+                <input type="hidden" name="human_puzzle" value="{{human_puzzle}}">
+                <input type="hidden" name="agent" value="ai">
+                <input type="hidden" name="ai_cost" value="{{ai_cost}}">
+                <input type="hidden" name="human_cost" value="{{human_cost}}">
+                <input type="submit" value="Solve">
+            </form>
+    
+    
+            <form method="post" action="{{ url_for('move') }}" id="move-form">
+                <input type="hidden" name="direction" id="direction" value=""></input>
+                <input type="hidden" name="ai_puzzle" value="{{ai_puzzle}}">
+                <input type="hidden" name="human_puzzle" value="{{human_puzzle}}">
+                <input type="hidden" name="ai_cost" value="{{ai_cost}}">
+                <input type="hidden" name="human_cost" value="{{human_cost}}">
+                <input type="hidden" name="agent" id="move-agent" value="">
+            </form>
+
+    
+            <p>Is solved: {{ai_puzzle_is_solved}}</p>
+            <p>Solution Details</p>
+            <p>Solution method: BFS</p>   
+            <p>Number of moves in solution: {{ai_cost}}</p> 
+            <p>Total number of expanded nodes: {{num_expanded_nodes}}</p> 
+            <p>Maximal search depth: {{max_search_depth}}</p> 
+            <p>Maximal Ram Usage: {{max_ram_usage}}</p> 
+            
+        </div>
+  
+</div>
+<script>
+    function human_move(direction){
+        console.log(direction)
+        document.getElementById("direction").value=direction;
+        document.getElementById("move-agent").value="human";
+        document.getElementById("move-form").submit();
+    }
+    document.addEventListener('keydown', event => {
+        switch (event.keyCode){
+            case 37: human_move("l");
+            break;
+
+            case 39: human_move("r");
+            break;
+
+            case 38: human_move("u"); 
+            break;
+
+            case 40: human_move("d");
+            break;
+        }
+    }); 
+
+</script>
+
+<script src="../static/js/modules.js"></script>
+
 {% endblock body %}

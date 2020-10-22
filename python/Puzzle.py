@@ -4,7 +4,6 @@ class Puzzle:
     """
     Initialize puzzle. Returns a Puzzle object
     """
-
     def __init__(self, puzzle_height, puzzle_width, initial_grid = None,
                 last_move = "", search_depth = 0, parent = None):
         self._last_move = last_move # Only counting moves that are part of solution proces
@@ -555,7 +554,7 @@ class Puzzle:
                 max_search_depth = current_search_depth
 
 
-    def solve_puzzle(self, method, print_results = True):
+    def solve_puzzle(self, method, print_results = False):
         """
         Takes a puzzle object and a method ("bfs", "dfs" or "ast" or "gbfs") and returns
         the triple: solution_string, num_expanded_nodes, max_search_depth

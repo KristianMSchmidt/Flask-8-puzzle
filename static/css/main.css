@@ -1,14 +1,42 @@
-html {
-  background-color: lightcyan;
-}
-
+/* Click Watch Sass in VSC when working w. this file */
 * {
   margin: 0;
   font-family: "Courier New", Courier, monospace;
   padding: 0;
 }
 
-.container {
+html {
+  background-color: lightcyan;
+  color: #000;
+}
+
+.title-area {
+  text-align: center;
+  margin-bottom: 2em;
+}
+
+.title-area input {
+  height: 40px;
+  width: 200px;
+  border-radius: 60px;
+  font-size: 18px;
+}
+
+.horizontal-flex-container {
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: start;
+      -ms-flex-align: start;
+          align-items: flex-start;
+}
+
+.vertical-flex-container {
   width: 100%;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -17,14 +45,10 @@ html {
   -webkit-box-direction: normal;
       -ms-flex-direction: column;
           flex-direction: column;
-  -ms-flex-wrap: wrap;
-      flex-wrap: wrap;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
+  /*horizontally centers the content items of the vertical flex boxes */
 }
 
 .board {
@@ -39,6 +63,8 @@ html {
   gap: 0;
   width: 180px;
   height: 180px;
+  background-color: #55b4b0;
+  color: #000;
 }
 
 .board > div {
@@ -46,66 +72,11 @@ html {
   text-align: center;
   border-top: 1px solid black;
   border-right: 1px solid black;
+  font-size: 1em;
+  font-weight: bold;
 }
 
-.sboard {
-  margin-top: 500px;
-  display: -ms-grid;
-  display: grid;
-  -ms-grid-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
-      grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
-  -ms-grid-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
-      grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
-  border-bottom: 2px solid black;
-  border-left: 2px solid black;
-  gap: 0;
-  width: 200px;
-  height: 200px;
-}
-
-.sboard > div {
-  text-align: center;
-  border-top: 1px solid black;
-  border-right: 1px solid black;
-}
-
-.sboard > div:nth-child(3n + 0) {
-  border-right: 2px solid black;
-}
-
-.sboard > div:nth-child(27n + 1) {
-  border-top: 2px solid black;
-}
-
-.sboard > div:nth-child(27n + 2) {
-  border-top: 2px solid black;
-}
-
-.sboard > div:nth-child(27n + 3) {
-  border-top: 2px solid black;
-}
-
-.sboard > div:nth-child(27n + 4) {
-  border-top: 2px solid black;
-}
-
-.sboard > div:nth-child(27n + 5) {
-  border-top: 2px solid black;
-}
-
-.sboard > div:nth-child(27n + 6) {
-  border-top: 2px solid black;
-}
-
-.sboard > div:nth-child(27n + 7) {
-  border-top: 2px solid black;
-}
-
-.sboard > div:nth-child(27n + 8) {
-  border-top: 2px solid black;
-}
-
-.sboard > div:nth-child(27n + 9) {
-  border-top: 2px solid black;
+.board > div.zero-tile {
+  background-color: white;
 }
 /*# sourceMappingURL=main.css.map */

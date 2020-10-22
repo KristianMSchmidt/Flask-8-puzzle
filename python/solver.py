@@ -13,5 +13,5 @@ if __name__ == "__main__":
                               [14, 10, 9, 13], \
                               [2, 6, 1, 4], \
                               [3, 7, 5, 0]])
-    Joes_puzzle.solve_puzzle("gbfs",print_results=True)
-    
+    #Joes_puzzle.solve_puzzle("gbfs",print_results=True)
+    print(string_to_grid("6,1,8,4,0,2,7,3,5"))
