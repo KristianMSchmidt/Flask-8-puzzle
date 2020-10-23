@@ -2,6 +2,7 @@
 $backgr-color: lightcyan;
 $tile-color: #55b4b0;
 $zero-tile-color: white;
+$button_color: lightgrey;
 
 // Set Text Color
 @function set-text-color($color) {
@@ -32,7 +33,16 @@ html {
     border-radius: 60px;
     font-size: 18px;
   }
+  input:focus {
+    /*outline: 3px dashed $tile_color;*/
+    outline: none;
+  }
+  input:active {
+    background-color: $button_color;
+    color: set-text-color($button_color);
+  }
 }
+
 .horizontal-flex-container {
   width: 100%;
   display: flex;
@@ -45,6 +55,29 @@ html {
   display: flex;
   flex-direction: column;
   align-items: center; /*horizontally centers the content items of the vertical flex boxes */
+
+  &.solution_details {
+    p {
+      margin-left: 0;
+      padding-left: 0;
+      float: left;
+    }
+  }
+  input {
+    margin-top: 1em;
+    height: 30px;
+    width: 160px;
+    border-radius: 60px;
+    font-size: 15px;
+  }
+  input:focus {
+    /*outline: 3px dashed $tile_color;*/
+    outline: none;
+  }
+  input:active {
+    background-color: $button_color;
+    color: set-text-color($button_color);
+  }
 }
 
 .board {

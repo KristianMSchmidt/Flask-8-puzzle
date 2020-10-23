@@ -22,6 +22,16 @@ html {
   font-size: 18px;
 }
 
+.title-area input:focus {
+  /*outline: 3px dashed $tile_color;*/
+  outline: none;
+}
+
+.title-area input:active {
+  background-color: lightgrey;
+  color: #000;
+}
+
 .horizontal-flex-container {
   width: 100%;
   display: -webkit-box;
@@ -49,6 +59,30 @@ html {
       -ms-flex-align: center;
           align-items: center;
   /*horizontally centers the content items of the vertical flex boxes */
+}
+
+.vertical-flex-container.solution_details p {
+  margin-left: 0;
+  padding-left: 0;
+  float: left;
+}
+
+.vertical-flex-container input {
+  margin-top: 1em;
+  height: 30px;
+  width: 160px;
+  border-radius: 60px;
+  font-size: 15px;
+}
+
+.vertical-flex-container input:focus {
+  /*outline: 3px dashed $tile_color;*/
+  outline: none;
+}
+
+.vertical-flex-container input:active {
+  background-color: lightgrey;
+  color: #000;
 }
 
 .board {

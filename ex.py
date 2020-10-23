@@ -1,2 +1,3 @@
-x=str([1,2,3])
-print(x)
+s="12345"
+print(s[-1])
+print(s[1:])
