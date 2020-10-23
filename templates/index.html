@@ -9,7 +9,7 @@
 </div>
 
 <div class="horizontal-flex-container">
-    <div class="vertical-flex-container">
+    <div class="vertical-flex-container game-area">
         <h3>You</h3>
         <div class="board">
             {% for i in range(3) %}
@@ -25,7 +25,7 @@
         <p>#Moves: {{human_cost}}</p> 
         <p>{% if human_puzzle_is_solved %}Solved!{% else %}Not solved yet{% endif %}</p>
     </div>
-    <div class="vertical-flex-container">
+    <div class="vertical-flex-container game-area">
         <h3>Computer</h3>
         <div class="board">
             {% for i in range(3) %}
@@ -57,40 +57,22 @@
         {% endif %}
 
     </div>
-    {% if not ai_puzzle_is_solved %}    
-    <style>
-    input[type="radio"] {
-        display:inline-block;
-    }
-    
-    label {
-        display:inline-block;
-    }     
-    </style>
-        <div class="vertical-flex-container">
+
+    <div class="vertical-flex-container nerd-area">
+        {% if not ai_puzzle_is_solved %}    
             <h3>Computer settings</h3>
-            <form action="/action_page.php">
-            <p>Do you want to ...:</p>
-            <input type="radio" id="male" name="gender" value="male">
-            <label for="male">solve in as few moves as possible</label><br>
-            <input type="radio" id="female" name="gender" value="female">
-            <label for="female">calculate a solution as fast as possible</label><br>
-            <input type="radio" id="other" name="gender" value="other">
-            <label for="other">try something</label>
-            </form>
-                    
-        </div>
-    {% else %}
-        <div class="vertical-flex-container solution_details">
-            <h3>Solution details</h3>
-            <p>Solution method: BFS</p>   
-            <p>Number of moves in solution: {{ai_cost}}</p> 
-            <p>Running time: {{running_time}}s</p>
-            <p>Total number of expanded nodes: {{num_expanded_nodes}}</p> 
-            <p>Maximal search depth: {{max_search_depth}}</p> 
-            <p>Maximal Ram Usage: {{max_ram_usage}}</p>      
-        </div>
-    {% endif %}
+                           
+        {% else %}
+                <h3>Solution details</h3>
+                <p>Solution method: BFS</p>   
+                <p>Number of moves in solution: {{ai_cost}}</p> 
+                <p>Running time: {{running_time}}s</p>
+                <p>Total number of expanded nodes: {{num_expanded_nodes}}</p> 
+                <p>Maximal search depth: {{max_search_depth}}</p> 
+                <p>Maximal Ram Usage: {{max_ram_usage}}</p>      
+        {% endif %}
+    </div>
+
 
 </div>
 
