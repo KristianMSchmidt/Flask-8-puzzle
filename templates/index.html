@@ -5,14 +5,12 @@
 <div class="title-area">
     <h1>8-puzzle</h1>
     <h4>Solve the puzzle yourself (use arrow keys) or try the automatic solver</h4>
-    <form action="/" method="post">
-        <input type="submit" value="New puzzle">
-    </form>
+    <input type="button" id="new_puzzle_btn" value="New puzzle">
 </div>
 
 <div class="horizontal-flex-container">
     <div class="vertical-flex-container">
-        <h3>Your solution</h3>
+        <h3>You</h3>
         <div class="board">
             {% for i in range(3) %}
                 {% for j in range(3) %}
@@ -24,62 +22,107 @@
                 {%endfor %}
             {% endfor %}
         </div>
-
-
-        <p>Is solved: {{human_puzzle_is_solved}}</p>
-        <p>Number of moves in solution: {{human_cost}}</p> 
+        <p>#Moves: {{human_cost}}</p> 
+        <p>{% if human_puzzle_is_solved %}Solved!{% else %}Not solved yet{% endif %}</p>
     </div>
     <div class="vertical-flex-container">
-            <h3>AI Solution</h3>
-            <div class="board">
-                {% for i in range(3) %}
-                    {% for j in range(3) %}
-                        {% if ai_puzzle[i][j]==0 %}
-                            <div class="zero-tile"></div>
-                        {% else %}
-                            <div>{{ai_puzzle[i][j]}}</div>   
-                        {% endif %}
-                    {%endfor %}
-                {% endfor %}
-            </div>
+        <h3>Computer</h3>
+        <div class="board">
+            {% for i in range(3) %}
+                {% for j in range(3) %}
+                    {% if ai_puzzle[i][j]==0 %}
+                        <div class="zero-tile"></div>
+                    {% else %}
+                        <div>{{ai_puzzle[i][j]}}</div>   
+                    {% endif %}
+                {%endfor %}
+            {% endfor %}
+        </div>
+        <p>#Moves: {{ai_cost}}</p> 
+        <p>
+            {% if ai_puzzle_is_solved and show_ai_solution_step %}
+                Showing solution!
+            {% elif ai_puzzle_is_solved and not show_ai_solution_step %}
+                Solved!
+            {% else %}
+                Not solved yet
+            {% endif %}
+        </p>     
+        <input type="button" id="solve_btn" value="Solve">
 
-            <form action="{{ url_for('solve') }}" method="post">
-                <input type="hidden" name="ai_puzzle" value="{{ai_puzzle}}">
-                <input type="hidden" name="human_puzzle" value="{{human_puzzle}}">
-                <input type="hidden" name="agent" value="ai">
-                <input type="hidden" name="ai_cost" value="{{ai_cost}}">
-                <input type="hidden" name="human_cost" value="{{human_cost}}">
-                <input type="submit" value="Solve">
-            </form>
-    
-    
-            <form method="post" action="{{ url_for('move') }}" id="move-form">
-                <input type="hidden" name="direction" id="direction" value=""></input>
-                <input type="hidden" name="ai_puzzle" value="{{ai_puzzle}}">
-                <input type="hidden" name="human_puzzle" value="{{human_puzzle}}">
-                <input type="hidden" name="ai_cost" value="{{ai_cost}}">
-                <input type="hidden" name="human_cost" value="{{human_cost}}">
-                <input type="hidden" name="agent" id="move-agent" value="">
-            </form>
+       {% if ai_puzzle_is_solved %}
+            <script>
+                document.getElementById("solve_btn").disabled = true;
+            </script>
+        {% endif %}
 
+    </div>
+    {% if not ai_puzzle_is_solved %}    
+    <style>
+    input[type="radio"] {
+        display:inline-block;
+    }
     
-            <p>Is solved: {{ai_puzzle_is_solved}}</p>
-            <p>Solution Details</p>
+    label {
+        display:inline-block;
+    }     
+    </style>
+        <div class="vertical-flex-container">
+            <h3>Computer settings</h3>
+            <form action="/action_page.php">
+            <p>Do you want to ...:</p>
+            <input type="radio" id="male" name="gender" value="male">
+            <label for="male">solve in as few moves as possible</label><br>
+            <input type="radio" id="female" name="gender" value="female">
+            <label for="female">calculate a solution as fast as possible</label><br>
+            <input type="radio" id="other" name="gender" value="other">
+            <label for="other">try something</label>
+            </form>
+                    
+        </div>
+    {% else %}
+        <div class="vertical-flex-container solution_details">
+            <h3>Solution details</h3>
             <p>Solution method: BFS</p>   
             <p>Number of moves in solution: {{ai_cost}}</p> 
+            <p>Running time: {{running_time}}s</p>
             <p>Total number of expanded nodes: {{num_expanded_nodes}}</p> 
             <p>Maximal search depth: {{max_search_depth}}</p> 
-            <p>Maximal Ram Usage: {{max_ram_usage}}</p> 
-            
+            <p>Maximal Ram Usage: {{max_ram_usage}}</p>      
         </div>
-  
+    {% endif %}
+
 </div>
+
+<form method="post" action="{{ url_for('index') }}" id="form">
+    <input type="hidden" name="requested_action" id="requested_action" value = "">
+    <input type="hidden" name="direction" id="direction" value="">
+    <input type="hidden" name="ai_puzzle" value="{{ai_puzzle}}">
+    <input type="hidden" name="human_puzzle" value="{{human_puzzle}}">
+    <input type="hidden" name="ai_cost" value="{{ai_cost}}">
+    <input type="hidden" name="human_cost" value="{{human_cost}}">
+    <input type="hidden" name="num_expanded_nodes" value="{{num_expanded_nodes}}">
+    <input type="hidden" name="max_search_depth" value="{{max_search_depth}}">
+    <input type="hidden" name="max_ram_usage" value="{{max_ram_usage}}">
+    <input type="hidden" name="ai_solution" value={{ai_solution}}>
+    <input type="hidden" name="running_time" value="{{running_time}}">
+</form>
+
 <script>
+    document.getElementById("new_puzzle_btn").addEventListener('click', event => {
+        document.getElementById("requested_action").value = "new_puzzle";
+        document.getElementById("form").submit();
+    })
+    
+    document.getElementById("solve_btn").addEventListener('click', event => {
+        document.getElementById("requested_action").value = "solve_puzzle";
+        document.getElementById("form").submit();
+    })
+    
     function human_move(direction){
-        console.log(direction)
+        document.getElementById("requested_action").value = "human_move";
         document.getElementById("direction").value=direction;
-        document.getElementById("move-agent").value="human";
-        document.getElementById("move-form").submit();
+        document.getElementById("form").submit();
     }
     document.addEventListener('keydown', event => {
         switch (event.keyCode){
@@ -100,5 +143,12 @@
 </script>
 
 <script src="../static/js/modules.js"></script>
+
+{% if ai_puzzle_is_solved and show_ai_solution_step %}
+    <script>
+        document.getElementById("requested_action").value = "show_ai_solution_step";
+        document.getElementById("form").submit();
+    </script>
+{% endif %}
 
 {% endblock body %}
