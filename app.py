@@ -27,7 +27,6 @@ def index():
     is_solved = puzzle.is_solved()
     return render_template(
         "index.html",
-        g = GLOBAL, 
         human_puzzle=puzzle._grid,
         ai_puzzle=puzzle._grid,
         ai_puzzle_is_solved = is_solved,
