@@ -28,6 +28,13 @@ class Puzzle:
             ans += str(self._grid[row])
             ans += "\n"
         return ans
+    
+    def __lt__(self, other):
+        """
+        Comparison bewteen puzzles Needed for heappush to be stable, when manhattan dist is equal 
+        Consider making more sense of the comparison. Right now it's just a random selection. 
+        """
+        return self
 
 
     def clone(self):
@@ -498,12 +505,9 @@ class Puzzle:
         I add each child to the heap/frontier if it is not in the closed
         list (nb: this makes the heap longer)
         """
-
         from heapq import heappush, heappop
         frontier = [] # The "frontier". I use heap to do fast extract minimums
-
         heappush(frontier, (self.manhattan_dist(), self))
-
         max_search_depth = 0
 
         closed = set()
@@ -556,7 +560,7 @@ class Puzzle:
 
     def solve_puzzle(self, method, print_results = False):
         """
-        Takes a puzzle object and a method ("bfs", "dfs" or "ast" or "gbfs") and returns
+        Takes a puzzle object and a method ("bfs", "dfs" or "ast_alt" or "gbfs") and returns
         the triple: solution_string, num_expanded_nodes, max_search_depth
         """
         if print_results:
@@ -569,6 +573,10 @@ class Puzzle:
             solution_string, depth, num_expanded_nodes, max_search_depth = self.solve_puzzle_dfs()
         elif method == "ast":
             solution_string, depth, num_expanded_nodes, max_search_depth = self.solve_puzzle_ast()
+        elif method == "ast_naive":
+            solution_string, depth, num_expanded_nodes, max_search_depth = self.solve_puzzle_ast_naive()
+        elif method == "ast_alt":
+            solution_string, depth, num_expanded_nodes, max_search_depth = self.solve_puzzle_ast_alternative()
         elif method == "gbfs":
             solution_string, depth, num_expanded_nodes, max_search_depth = self.solve_puzzle_gbfs()
         else:

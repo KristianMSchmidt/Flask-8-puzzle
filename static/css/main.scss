@@ -54,12 +54,21 @@ html {
   width: 100%;
   display: flex;
   flex-direction: column;
-  &.game-area {
-    align-items: center; /*horizontally centers the content items of the vertical flex boxes */
-  }
+  align-items: center; /*horizontally centers the content items of the vertical flex boxes */
   &.nerd-area {
-    color: black;
+    align-items: center;
+    h4 {
+      margin-top: 1.6em;
+      margin-bottom: 0.5em;
+    }
+    input {
+      margin-top: 0;
+      margin-bottom: 0.5em;
+      height: 1.5em;
+      color: black;
+    }
   }
+
   input {
     margin-top: 1em;
     height: 30px;
