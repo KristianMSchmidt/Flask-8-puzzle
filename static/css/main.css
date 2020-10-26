@@ -16,6 +16,7 @@ html {
 }
 
 .title-area input {
+  margin-top: 0.5em;
   height: 40px;
   width: 200px;
   border-radius: 60px;
@@ -59,24 +60,7 @@ html {
       -ms-flex-align: center;
           align-items: center;
   /*horizontally centers the content items of the vertical flex boxes */
-}
-
-.vertical-flex-container.nerd-area {
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-}
-
-.vertical-flex-container.nerd-area h4 {
-  margin-top: 1.6em;
-  margin-bottom: 0.5em;
-}
-
-.vertical-flex-container.nerd-area input {
-  margin-top: 0;
-  margin-bottom: 0.5em;
-  height: 1.5em;
-  color: black;
+  padding-bottom: 3em;
 }
 
 .vertical-flex-container input {
@@ -95,6 +79,31 @@ html {
 .vertical-flex-container input:active {
   background-color: lightgrey;
   color: #000;
+}
+
+.vertical-flex-container.nerd-area input {
+  width: 200px;
+  /*button*/
+}
+
+.vertical-flex-container.nerd-area h4 {
+  margin-top: 1.6em;
+  margin-bottom: 0.7em;
+}
+
+.vertical-flex-container.nerd-area .h6 {
+  margin-top: 1em;
+}
+
+.vertical-flex-container.nerd-area .selector {
+  height: 1.4em;
+  /* radio-button size */
+  margin-top: 0.3em;
+  margin-bottom: 0.8em;
+}
+
+.vertical-flex-container.nerd-area p {
+  margin-top: 0;
 }
 
 .board {
@@ -124,5 +133,48 @@ html {
 
 .board > div.zero-tile {
   background-color: white;
+}
+
+@media only screen and (max-width: 760px) {
+  .horizontal-flex-container {
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  .btn {
+    width: 200px;
+    height: 42px;
+  }
+  #custom_input {
+    width: 200px;
+  }
+}
+
+@media only screen and (max-width: 315px) {
+  #custom_input {
+    width: 90%;
+  }
+}
+
+@media only screen and (max-width: 260px) {
+  .btn {
+    width: 190px;
+  }
+  #custom_input {
+    width: 190px;
+  }
+}
+
+@media only screen and (max-width: 210px) {
+  .btn {
+    width: 160px;
+  }
+  #custom_input {
+    width: 160px;
+  }
 }
 /*# sourceMappingURL=main.css.map */

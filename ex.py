@@ -1,3 +1,2 @@
-s="12345"
-print(s[-1])
-print(s[1:])
+l=[1,2,3,4]
+print(str(l))

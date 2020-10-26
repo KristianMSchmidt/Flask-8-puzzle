@@ -28,6 +28,7 @@ html {
   text-align: center;
   margin-bottom: 2em;
   input {
+    margin-top: 0.5em;
     height: 40px;
     width: 200px;
     border-radius: 60px;
@@ -55,19 +56,7 @@ html {
   display: flex;
   flex-direction: column;
   align-items: center; /*horizontally centers the content items of the vertical flex boxes */
-  &.nerd-area {
-    align-items: center;
-    h4 {
-      margin-top: 1.6em;
-      margin-bottom: 0.5em;
-    }
-    input {
-      margin-top: 0;
-      margin-bottom: 0.5em;
-      height: 1.5em;
-      color: black;
-    }
-  }
+  padding-bottom: 3em;
 
   input {
     margin-top: 1em;
@@ -83,6 +72,26 @@ html {
   input:active {
     background-color: $button_color;
     color: set-text-color($button_color);
+  }
+  &.nerd-area {
+    input {
+      width: 200px; /*button*/
+    }
+    h4 {
+      margin-top: 1.6em;
+      margin-bottom: 0.7em;
+    }
+    .h6 {
+      margin-top: 1em;
+    }
+    .selector {
+      height: 1.4em; /* radio-button size */
+      margin-top: 0.3em;
+      margin-bottom: 0.8em;
+    }
+    p {
+      margin-top: 0;
+    }
   }
 }
 
@@ -108,5 +117,44 @@ html {
     &.zero-tile {
       background-color: $zero-tile-color;
     }
+  }
+}
+
+@media only screen and (max-width: 760px) {
+  .horizontal-flex-container {
+    flex-direction: column;
+  }
+}
+@media only screen and (max-width: 480px) {
+  .btn {
+    width: 200px;
+    height: 42px;
+  }
+  #custom_input {
+    width: 200px;
+  }
+}
+
+@media only screen and (max-width: 315px) {
+  #custom_input {
+    width: 90%;
+  }
+}
+
+@media only screen and (max-width: 260px) {
+  .btn {
+    width: 190px;
+  }
+  #custom_input {
+    width: 190px;
+  }
+}
+
+@media only screen and (max-width: 210px) {
+  .btn {
+    width: 160px;
+  }
+  #custom_input {
+    width: 160px;
   }
 }

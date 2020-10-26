@@ -14,7 +14,7 @@ from python.utils import string_to_grid, convert_solution_string
 
 app = Flask('__name__')
 
-collection = ["r", "rr", "rrd", "rdd","ddrr", "rdrdllurrullddrurdululddruuldduuddrr", "ddrruulddruulldrdurdllurd", "rdrdluurdlurdlrldrulldruldruuldrldruuddruulddlurdruldluurrdlurdld", "rdrulddlrurdluurdlurddlurdllurrdluuldrdrulurddllurd", "drdrulurdlldrurduulddluurrdldluurrddlluurrddlluurrddlluurrd","rrddllu","ddrruullddrruulldrldr"]
+collection = ["rdrdllurrullddrurdululddruuldduuddrr", "ddrruulddruulldrdurdllurdr", "rdrdluurdlurdlrldrulldruldruuldrldruuddruulddlurdruldluurrdlurdldr", "rdrulddlrurdluurdlurddlurdllurrdluuldrdrulurddllurdr", "drdrulurdlldrurduulddluurrdldluurrddlluurrddlluurrddlluurrdd","rrddllurrd","ddrruullddrruulldrldrr"]
 
 @app.route("/", methods=['GET', 'POST'])
 def index():
@@ -22,6 +22,7 @@ def index():
     asked_for_help = False
     human_solution = ""
     show_ai_solution_step = False
+    full_ai_solution = ""
     send_new_puzzle = (request.method == 'GET' or (request.method == 'POST' and request.form['requested_action']=='new_puzzle'))
     if send_new_puzzle: 
         puzzle = Puzzle(3,3)
@@ -30,6 +31,7 @@ def index():
         puzzle_number +=1
         puzzle_is_solved = puzzle.is_solved()
         ai_puzzle = puzzle
+        ai_original_puzzle = puzzle
         human_puzzle = puzzle
         ai_puzzle_is_solved = puzzle_is_solved
         human_puzzle_is_solved = puzzle_is_solved
@@ -46,6 +48,7 @@ def index():
     else: 
         ai_puzzle = Puzzle(3,3, string_to_grid(''.join(c for c in  request.form['ai_puzzle'] if c not in '[]')))
         human_puzzle = Puzzle(3,3, string_to_grid(''.join(c for c in request.form['human_puzzle'] if c not in '[]')))
+        ai_original_puzzle = Puzzle(3,3, string_to_grid(''.join(c for c in request.form['ai_original_puzzle'] if c not in '[]')))
         ai_cost = int(request.form['ai_cost'])
         human_cost = int(request.form['human_cost'])
         num_expanded_nodes = request.form['num_expanded_nodes']
@@ -57,6 +60,7 @@ def index():
         ai_num_solution_steps = request.form['ai_num_solution_steps']
         human_steps_made = request.form['human_steps_made']
         puzzle_number = request.form['puzzle_number']
+        full_ai_solution = request.form['full_ai_solution']
         ai_puzzle_is_solved = ai_puzzle.is_solved()
         human_puzzle_is_solved = human_puzzle.is_solved()
 
@@ -74,10 +78,17 @@ def index():
             search_type = request.form['search_type']
             ai_solution, ai_num_solution_steps, num_expanded_nodes, max_search_depth, running_time, max_ram_usage \
                 = ai_puzzle.solve_puzzle(search_type)
-            running_time = round(running_time, 4)
+            running_time = round(running_time, 6)
             max_ram_usage = round(max_ram_usage, 4)  #number is in megabytes
             ai_puzzle_is_solved = True
-            show_ai_solution_step = True
+            full_ai_solution = ai_solution
+            if ai_num_solution_steps > 100:
+                show_ai_solution_step = False
+                ai_puzzle.update_puzzle(ai_solution)
+                ai_puzzle_is_solved = True
+                ai_cost = ai_num_solution_steps
+            else:
+                show_ai_solution_step = True
         
         elif request.form['requested_action'] == "show_ai_solution_step":
             if len(ai_solution) > 0:
@@ -91,8 +102,13 @@ def index():
             ai_solution = ai_solution[1:]
             ai_puzzle_is_solved = True
         
+        elif request.form['requested_action'] == "unsolve":
+            ai_puzzle = ai_original_puzzle
+            ai_puzzle_is_solved = False
+            ai_cost = 0
+        
         elif request.form['requested_action'] == "help":
-            human_solution_str, human_num_solution_steps, _, _, _, _ = human_puzzle.solve_puzzle("ast_alt")
+            human_solution_str, human_num_solution_steps, _, _, _, _ = human_puzzle.solve_puzzle("ast")
             human_solution_list = convert_solution_string(human_solution_str)
             if len(human_solution_list) > 0:
                 human_solution = human_solution_list[0]
@@ -102,8 +118,9 @@ def index():
                 human_solution = human_solution + ", " + human_solution_list[2] 
             human_solution += "..."    
             asked_for_help = True 
+       
         
-    return render_template(
+    return render_template( 
         "index.html",
         human_puzzle = human_puzzle._grid,
         ai_puzzle = ai_puzzle._grid,
@@ -123,8 +140,14 @@ def index():
         puzzle_number = puzzle_number,
         human_solution = human_solution,
         human_num_solution_steps = human_num_solution_steps,
-        asked_for_help = asked_for_help
+        asked_for_help = asked_for_help,
+        ai_original_puzzle = ai_original_puzzle._grid,
+        full_ai_solution = full_ai_solution
         ) 
+
+@app.route('/<full_ai_solution>')
+def show_solution_string(full_ai_solution):
+    return str(convert_solution_string(full_ai_solution))
 
 if __name__ == "__main__":
     app.run(debug=True)

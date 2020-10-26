@@ -572,11 +572,9 @@ class Puzzle:
         elif method == "dfs":
             solution_string, depth, num_expanded_nodes, max_search_depth = self.solve_puzzle_dfs()
         elif method == "ast":
-            solution_string, depth, num_expanded_nodes, max_search_depth = self.solve_puzzle_ast()
+            solution_string, depth, num_expanded_nodes, max_search_depth = self.solve_puzzle_ast_alternative()
         elif method == "ast_naive":
             solution_string, depth, num_expanded_nodes, max_search_depth = self.solve_puzzle_ast_naive()
-        elif method == "ast_alt":
-            solution_string, depth, num_expanded_nodes, max_search_depth = self.solve_puzzle_ast_alternative()
         elif method == "gbfs":
             solution_string, depth, num_expanded_nodes, max_search_depth = self.solve_puzzle_gbfs()
         else:
