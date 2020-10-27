@@ -73,7 +73,7 @@ html {
     background-color: $button_color;
     color: set-text-color($button_color);
   }
-  &.nerd-area {
+  &.info-area {
     input {
       width: 200px; /*button*/
     }
@@ -120,7 +120,7 @@ html {
   }
 }
 
-@media only screen and (max-width: 760px) {
+@media only screen and (max-width: 985px) {
   .horizontal-flex-container {
     flex-direction: column;
   }

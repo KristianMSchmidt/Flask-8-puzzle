@@ -45,10 +45,10 @@
                 document.getElementById("solve_btn").value= "Unsolve"
             </script>    
         {% endif %}
-    </div>    
-    <div class="vertical-flex-container nerd-area">
+    </div>   
+    <div class="vertical-flex-container info-area">
         {% if not ai_puzzle_is_solved %}  
-            <h4>Select search algorithm</h4>
+            <h4>Search algorithm</h4>
             <label for="ast" class="radiolabel">A*-search</label>
             <input type="radio" class="selector" id="ast" name="search_type"  value="ast" checked="true">
             <label for="gbfs class="radiolabel">Gready best-first search</label>
@@ -64,13 +64,13 @@
             <p>#Moves in solution:
                 <a href={{url_for('show_solution_string', full_ai_solution=full_ai_solution)}}>
                 {{ai_num_solution_steps}}</a></p> 
-            <p>Calculation time: {{running_time}}s</p>
+            <p>Running time: {{running_time}}s</p>
             <p class="h6">Nerd stuff:</p>
             <p>Max search depth: {{max_search_depth}}</p> 
             <p>Max Ram Usage: {{max_ram_usage}}MB</p>   
             <p>#Expanded nodes: {{num_expanded_nodes}}</p> 
         {% endif %}
-    </div>
+    </div> 
     <div class="vertical-flex-container game-area">
         <h3>You</h3>
         <p>Sample #{{puzzle_number}}</p>
@@ -89,7 +89,7 @@
         <p>{% if human_puzzle_is_solved %}Solved!{% else %}Not solved yet{% endif %}</p>
         <input type="button" id="help_btn" value="Need help?" >
     </div>
-    <div class="vertical-flex-container nerd-area">
+    <div class="vertical-flex-container info-area">
         <h4>Here's a hint</h4>
         {% if not asked_for_help %}
             <p>A solved puzzle</p>
@@ -103,7 +103,7 @@
             <p>do you need?</p>
         {% else %}
             {% if human_puzzle_is_solved %}
-            <p>The puzzle is already solved</p>
+            <p>The puzzle is solved</p>
             {% else %}         
                 <p>Your puzzle can be solved<p>
                 <p>from the current position</p>

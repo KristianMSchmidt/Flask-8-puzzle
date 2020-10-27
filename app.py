@@ -78,8 +78,8 @@ def index():
             search_type = request.form['search_type']
             ai_solution, ai_num_solution_steps, num_expanded_nodes, max_search_depth, running_time, max_ram_usage \
                 = ai_puzzle.solve_puzzle(search_type)
-            running_time = round(running_time, 6)
-            max_ram_usage = round(max_ram_usage, 4)  #number is in megabytes
+            running_time = round(running_time, 5)
+            max_ram_usage = round(max_ram_usage, 2)  #number is in megabytes
             ai_puzzle_is_solved = True
             full_ai_solution = ai_solution
             if ai_num_solution_steps > 100:
