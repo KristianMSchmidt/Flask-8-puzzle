@@ -19,7 +19,7 @@
                     {% else %}
                         <div>{{ai_puzzle[i][j]}}</div>   
                     {% endif %}
-                {%endfor %}
+                {% endfor %}
             {% endfor %}
         </div>
         <p>#Moves: {{ai_cost}}</p> 
@@ -33,17 +33,15 @@
             {% else %}
                 Not solved yet
             {% endif %}
-        </p>     
-        <input type="button" id="solve_btn" value="Solve">
-        {% if ai_puzzle_is_solved and show_ai_solution_step %}
-            <script>
-                document.getElementById("solve_btn").disabled = "true"
-            </script>
-        {% endif %}
-        {% if ai_puzzle_is_solved and not show_ai_solution_step  %}
-            <script>
-                document.getElementById("solve_btn").value= "Unsolve"
-            </script>    
+        </p>
+        {% if not ai_puzzle_is_solved %}
+           <input type="button" id="solve_btn" value="Solve">
+        {% else %}
+            {% if show_ai_solution_step %}
+                <input type="button" id="solve_btn" value="Solve" disabled="true">
+            {% else %}
+                <input type="button" id="solve_btn" value="Unsolve">            
+            {% endif %}
         {% endif %}
     </div>   
     <div class="vertical-flex-container info-area">
@@ -82,7 +80,7 @@
                     {% else %}
                         <div>{{human_puzzle[i][j]}}</div>   
                     {% endif %}
-                {%endfor %}
+                {% endfor %}
             {% endfor %}
         </div>
         <p>#Moves: {{human_cost}}</p> 
@@ -90,30 +88,7 @@
         <input type="button" id="help_btn" value="Need help?" >
     </div>
     <div class="vertical-flex-container info-area">
-        <h4>Here's a hint</h4>
-        {% if not asked_for_help %}
-            <p>A solved puzzle</p>
-            <p>looks like this:</p>
-            <br>
-            <p>[0,1,2]</p>
-            <p>[3,4,5]</p>
-            <p>[6,7,8]</p>
-            <br>
-            <p>How many moves</p>
-            <p>do you need?</p>
-        {% else %}
-            {% if human_puzzle_is_solved %}
-            <p>The puzzle is solved</p>
-            {% else %}         
-                <p>Your puzzle can be solved<p>
-                <p>from the current position</p>
-                <p>in at most {{human_num_solution_steps}} steps.</p>
-                <br>
-                </p>One possible solution   </p>
-                <p>begins with the moves:   </p>
-                <p>{{human_solution}}       </p>
-            {% endif %}
-        {% endif %}
+        {% include "help.html" %}
     </div>
 </div>
 
@@ -137,64 +112,14 @@
     <input type="hidden" name="full_ai_solution" value="{{full_ai_solution}}">
 </form>
 
+<script src="../static/js/eventlisteners.js"></script>
 <script>
-
-    document.getElementById("new_puzzle_btn").addEventListener('click', event => {
-        document.getElementById("requested_action").value = "new_puzzle";
-        document.getElementById("form").submit();
-    })
-    document.getElementById("help_btn").addEventListener('click', event => {
-        document.getElementById("requested_action").value = "help";
-        document.getElementById("form").submit();
-    })
-    
-    document.getElementById("solve_btn").addEventListener('click', event => {
-        if (document.getElementById("solve_btn").value == "Solve"){
-            search_type = document.querySelector('input[name="search_type"]:checked').value;
-            document.getElementById("search_type").value = search_type;
-            document.getElementById("ai_solve_status").innerHTML = "Calculating..."
-            document.getElementById("requested_action").value = "solve_puzzle";
-            document.getElementById("form").submit();
-        }
-        else{
-            console.log("unsolve")
-            document.getElementById("requested_action").value = "unsolve";
-            document.getElementById("form").submit();
-        }
-    })
-    function human_move(direction){
-        document.getElementById("requested_action").value = "human_move";
-        document.getElementById("human_steps_made").value= "{{human_steps_made}}" + direction;
-        console.log("{{human_steps_made}}");
-        document.getElementById("direction").value=direction;
-        document.getElementById("form").submit(); 
-    }
-    document.addEventListener('keydown', event => {
-        switch (event.keyCode){
-            case 37: human_move("l");
-            break;
-
-            case 39: human_move("r");
-            break;
-
-            case 38: human_move("u"); 
-            break;
-
-            case 40: human_move("d");
-            break;
-        }
-    }); 
-
-</script>
-
-<script src="../static/js/modules.js"></script>
-
-<script>
-    "{% if ai_puzzle_is_solved and show_ai_solution_step %}"     
+    set_event_listeners()
+    "{% if show_ai_solution_step %}"     
+         /* loop untill all steps ai_solution is shown */
         document.getElementById("requested_action").value = "show_ai_solution_step";
         document.getElementById("form").submit();
     "{% endif %}"
-    
 </script>
 
 {% endblock body %}

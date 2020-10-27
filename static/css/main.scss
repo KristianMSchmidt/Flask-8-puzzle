@@ -1,4 +1,5 @@
-/* Click Watch Sass in VSC when working w. this file */
+/* Click Watch Sass in VSC when working on this file */
+
 $backgr-color: lightcyan;
 $tile-color: #55b4b0;
 $zero-tile-color: white;
@@ -43,21 +44,18 @@ html {
     color: set-text-color($button_color);
   }
 }
-
 .horizontal-flex-container {
   width: 100%;
   display: flex;
   flex-direction: row;
   align-items: flex-start;
 }
-
 .vertical-flex-container {
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center; /*horizontally centers the content items of the vertical flex boxes */
   padding-bottom: 3em;
-
   input {
     margin-top: 1em;
     height: 30px;
@@ -125,6 +123,7 @@ html {
     flex-direction: column;
   }
 }
+
 @media only screen and (max-width: 480px) {
   .btn {
     width: 200px;

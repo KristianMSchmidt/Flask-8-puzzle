@@ -14,20 +14,23 @@ from python.utils import string_to_grid, convert_solution_string
 
 app = Flask('__name__')
 
-collection = ["rdrdllurrullddrurdululddruuldduuddrr", "ddrruulddruulldrdurdllurdr", "rdrdluurdlurdlrldrulldruldruuldrldruuddruulddlurdruldluurrdlurdldr", "rdrulddlrurdluurdlurddlurdllurrdluuldrdrulurddllurdr", "drdrulurdlldrurduulddluurrdldluurrddlluurrddlluurrddlluurrdd","rrddllurrd","ddrruullddrruulldrldrr"]
+puzzle_collection = ["rdrdllurrullddrurdululddruuldduuddrr", "ddrruulddruulldrdurdllurdr", "rdrdluurdlurdlrldrulldruldruuldrldruuddruulddlurdruldluurrdlurdldr", "rdrulddlrurdluurdlurddlurdllurrdluuldrdrulurddllurdr", "drdrulurdlldrurduulddluurrdldluurrddlluurrddlluurrddlluurrdd","rrddllurrd","ddrruullddrruulldrldrr"]
 
 @app.route("/", methods=['GET', 'POST'])
 def index():
+    data = {}
+    data["xx"] = 777
     human_num_solution_steps = ""
     asked_for_help = False
     human_solution = ""
     show_ai_solution_step = False
     full_ai_solution = ""
     send_new_puzzle = (request.method == 'GET' or (request.method == 'POST' and request.form['requested_action']=='new_puzzle'))
-    if send_new_puzzle: 
+    if send_new_puzzle:
+        # First visit or user has requsted a new puzzle 
         puzzle = Puzzle(3,3)
-        puzzle_number = random_choice(range(len(collection)))
-        puzzle.update_puzzle(collection[puzzle_number])
+        puzzle_number = random_choice(range(len(puzzle_collection)))
+        puzzle.update_puzzle(puzzle_collection[puzzle_number])
         puzzle_number +=1
         puzzle_is_solved = puzzle.is_solved()
         ai_puzzle = puzzle
@@ -46,6 +49,7 @@ def index():
         ai_num_solution_steps = ""
         human_steps_made = ""
     else: 
+        # User has made some reqeust other than new puzzle
         ai_puzzle = Puzzle(3,3, string_to_grid(''.join(c for c in  request.form['ai_puzzle'] if c not in '[]')))
         human_puzzle = Puzzle(3,3, string_to_grid(''.join(c for c in request.form['human_puzzle'] if c not in '[]')))
         ai_original_puzzle = Puzzle(3,3, string_to_grid(''.join(c for c in request.form['ai_original_puzzle'] if c not in '[]')))
@@ -82,6 +86,7 @@ def index():
             max_ram_usage = round(max_ram_usage, 2)  #number is in megabytes
             ai_puzzle_is_solved = True
             full_ai_solution = ai_solution
+            # Only show solution steps visually, if solution is not too long
             if ai_num_solution_steps > 100:
                 show_ai_solution_step = False
                 ai_puzzle.update_puzzle(ai_solution)
@@ -119,7 +124,6 @@ def index():
             human_solution += "..."    
             asked_for_help = True 
        
-        
     return render_template( 
         "index.html",
         human_puzzle = human_puzzle._grid,
@@ -142,7 +146,8 @@ def index():
         human_num_solution_steps = human_num_solution_steps,
         asked_for_help = asked_for_help,
         ai_original_puzzle = ai_original_puzzle._grid,
-        full_ai_solution = full_ai_solution
+        full_ai_solution = full_ai_solution,
+        data = data
         ) 
 
 @app.route('/<full_ai_solution>')

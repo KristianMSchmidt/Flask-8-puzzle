@@ -1,0 +1,24 @@
+<h4>Here's a hint</h4>
+{% if not asked_for_help %}
+    <p>A solved puzzle</p>
+    <p>looks like this:</p>
+    <br>
+    <p>[0,1,2]</p>
+    <p>[3,4,5]</p>
+    <p>[6,7,8]</p>
+    <br>
+    <p>How many moves</p>
+    <p>do you need?</p>
+{% else %}
+    {% if human_puzzle_is_solved %}
+    <p>The puzzle is solved</p>
+    {% else %}         
+        <p>Your puzzle can be solved<p>
+        <p>from the current position</p>
+        <p>in at most {{human_num_solution_steps}} steps.</p>
+        <br>
+        </p>One possible solution   </p>
+        <p>begins with the moves:   </p>
+        <p>{{human_solution}}       </p>
+    {% endif %}
+{% endif %}
