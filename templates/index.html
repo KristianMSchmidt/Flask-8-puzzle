@@ -1,32 +1,16 @@
 {% extends 'base.html' %}
-
 {% block body %}
 
 <div class="title-area">
     <h1>8-puzzle</h1>
     <h4>Solve the puzzle yourself (use arrow keys) or try the automatic solver</h4>
-    <input type="button" id="new_puzzle_btn" value="New puzzle">
+    <input type="button" id="new_puzzle_btn" value="New Puzzle">
 </div>
 
 <div class="horizontal-flex-container">
     <div class="vertical-flex-container game-area">
-        <h3>You</h3>
-        <div class="board">
-            {% for i in range(3) %}
-                {% for j in range(3) %}
-                    {% if human_puzzle[i][j]==0 %}
-                        <div class="zero-tile"></div>
-                    {% else %}
-                        <div>{{human_puzzle[i][j]}}</div>   
-                    {% endif %}
-                {%endfor %}
-            {% endfor %}
-        </div>
-        <p>#Moves: {{human_cost}}</p> 
-        <p>{% if human_puzzle_is_solved %}Solved!{% else %}Not solved yet{% endif %}</p>
-    </div>
-    <div class="vertical-flex-container game-area">
         <h3>Computer</h3>
+        <p>Sample #{{puzzle_number}}</p>
         <div class="board">
             {% for i in range(3) %}
                 {% for j in range(3) %}
@@ -35,50 +19,88 @@
                     {% else %}
                         <div>{{ai_puzzle[i][j]}}</div>   
                     {% endif %}
-                {%endfor %}
+                {% endfor %}
             {% endfor %}
         </div>
         <p>#Moves: {{ai_cost}}</p> 
-        <p>
-            {% if ai_puzzle_is_solved and show_ai_solution_step %}
-                Showing solution!
-            {% elif ai_puzzle_is_solved and not show_ai_solution_step %}
-                Solved!
+        <p id="ai_solve_status">
+            {% if ai_puzzle_is_solved %}
+                {% if show_ai_solution_step %}
+                    Showing solution...
+                {% else %}
+                    Solved!
+                {% endif %}
             {% else %}
                 Not solved yet
             {% endif %}
-        </p>     
-        <input type="button" id="solve_btn" value="Solve">
-
-       {% if ai_puzzle_is_solved %}
-            <script>
-                document.getElementById("solve_btn").disabled = true;
-            </script>
-        {% endif %}
-
-    </div>
-
-    <div class="vertical-flex-container nerd-area">
-        {% if not ai_puzzle_is_solved %}    
-            <h3>Computer settings</h3>
-                           
+        </p>
+        {% if not ai_puzzle_is_solved %}
+           <input type="button" id="solve_btn" value="Solve">
         {% else %}
-                <h3>Solution details</h3>
-                <p>Solution method: BFS</p>   
-                <p>Number of moves in solution: {{ai_cost}}</p> 
-                <p>Running time: {{running_time}}s</p>
-                <p>Total number of expanded nodes: {{num_expanded_nodes}}</p> 
-                <p>Maximal search depth: {{max_search_depth}}</p> 
-                <p>Maximal Ram Usage: {{max_ram_usage}}</p>      
+            {% if show_ai_solution_step %}
+                <input type="button" id="solve_btn" value="Solve" disabled="true">
+            {% else %}
+                <input type="button" id="solve_btn" value="Unsolve">            
+            {% endif %}
         {% endif %}
+    </div>   
+    <div class="vertical-flex-container info">
+        {% if not ai_puzzle_is_solved %}  
+            <h4>Search algorithm</h4>
+            <label for="ast_alt" class="radiolabel">A*-search (Manhattan)</label>
+            <input type="radio" class="selector" id="ast_alt" name="search_type"  value="ast_alt" checked="true">
+            <label for="gbfs class="radiolabel">Gready best-first search</label>
+            <input type="radio" class="selector" id="gbfs" name="search_type"  value="gbfs">
+            <label for="bfs" class="radiolabel">Breadth-first search</label>
+            <input type="radio" class="selector" id="bfs" name="search_type"  value="bfs">
+            <label for="dfs" class="radiolabel">Depth-first search</label>
+            <input type="radio" class="selector" id="dfs" name="search_type" value="dfs">
+        {% else %}
+            <h4>Solution details</h4>
+            <p class="h6">Basics:</p>
+            <p>Solution method: {% if search_type=="ast_alt" %}A*{%else%}{{search_type}}{%endif%}</p>   
+            <p>#Moves in solution:
+                <a href={{url_for('show_solution_string', full_ai_solution=full_ai_solution)}}>
+                {{ai_num_solution_steps}}</a></p> 
+            <p>Running time: {{running_time}}s</p>
+            <p class="h6">Nerd stuff:</p>
+            <p>Max search depth: {{max_search_depth}}</p> 
+            <p>Max Ram Usage: {{max_ram_usage}}MB</p>   
+            <p>#Expanded nodes: {{num_expanded_nodes}}</p> 
+        {% endif %}
+    </div> 
+    <div class="vertical-flex-container game-area">
+        <h3>You</h3>
+        <p>Sample #{{puzzle_number}}</p>
+        <div class="board">
+            {% for i in range(3) %}
+                {% for j in range(3) %}
+                    {% if human_puzzle[i][j]==0 %}
+                        <div class="zero-tile"></div>
+                    {% else %}
+                        <div>{{human_puzzle[i][j]}}</div>   
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
+        </div>
+        <p>#Moves: {{human_cost}}</p> 
+        <p>{% if human_puzzle_is_solved %}Solved!{% else %}Not solved yet{% endif %}</p>
+        <input type="button" id="help_btn" value="Need help?" >
     </div>
-
-
+    {% if asked_for_help %}
+        <div class="vertical-flex-container info">
+            {% include "help.html" %}
+        </div>
+    {% endif %}
 </div>
 
 <form method="post" action="{{ url_for('index') }}" id="form">
     <input type="hidden" name="requested_action" id="requested_action" value = "">
+    <input type="hidden" name="search_type" id="search_type" value="{{search_type}}">
     <input type="hidden" name="direction" id="direction" value="">
+    <input type="hidden" name="human_steps_made" id="human_steps_made" value ="">
+    <input type="hidden" name="ai_original_puzzle" value="{{ai_original_puzzle}}">
+    <input type="hidden" name="puzzle_number" value={{puzzle_number}}>
     <input type="hidden" name="ai_puzzle" value="{{ai_puzzle}}">
     <input type="hidden" name="human_puzzle" value="{{human_puzzle}}">
     <input type="hidden" name="ai_cost" value="{{ai_cost}}">
@@ -88,49 +110,18 @@
     <input type="hidden" name="max_ram_usage" value="{{max_ram_usage}}">
     <input type="hidden" name="ai_solution" value={{ai_solution}}>
     <input type="hidden" name="running_time" value="{{running_time}}">
+    <input type="hidden" name="ai_num_solution_steps" value="{{ai_num_solution_steps}}">
+    <input type="hidden" name="full_ai_solution" value="{{full_ai_solution}}">
 </form>
 
+<script src="../static/js/eventlisteners.js"></script>
 <script>
-    document.getElementById("new_puzzle_btn").addEventListener('click', event => {
-        document.getElementById("requested_action").value = "new_puzzle";
-        document.getElementById("form").submit();
-    })
-    
-    document.getElementById("solve_btn").addEventListener('click', event => {
-        document.getElementById("requested_action").value = "solve_puzzle";
-        document.getElementById("form").submit();
-    })
-    
-    function human_move(direction){
-        document.getElementById("requested_action").value = "human_move";
-        document.getElementById("direction").value=direction;
-        document.getElementById("form").submit();
-    }
-    document.addEventListener('keydown', event => {
-        switch (event.keyCode){
-            case 37: human_move("l");
-            break;
-
-            case 39: human_move("r");
-            break;
-
-            case 38: human_move("u"); 
-            break;
-
-            case 40: human_move("d");
-            break;
-        }
-    }); 
-
-</script>
-
-<script src="../static/js/modules.js"></script>
-
-{% if ai_puzzle_is_solved and show_ai_solution_step %}
-    <script>
+    set_event_listeners()
+    "{% if show_ai_solution_step %}"     
+         /* loop untill all steps ai_solution is shown */
         document.getElementById("requested_action").value = "show_ai_solution_step";
         document.getElementById("form").submit();
-    </script>
-{% endif %}
+    "{% endif %}"
+</script>
 
 {% endblock body %}

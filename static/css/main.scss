@@ -1,4 +1,5 @@
-/* Click Watch Sass in VSC when working w. this file */
+/* Click Watch Sass in VSC when working on this file */
+
 $backgr-color: lightcyan;
 $tile-color: #55b4b0;
 $zero-tile-color: white;
@@ -26,8 +27,10 @@ html {
 
 .title-area {
   text-align: center;
+  padding-left: 0.8em;
   margin-bottom: 2em;
   input {
+    margin-top: 0.5em;
     height: 40px;
     width: 200px;
     border-radius: 60px;
@@ -42,24 +45,18 @@ html {
     color: set-text-color($button_color);
   }
 }
-
 .horizontal-flex-container {
   width: 100%;
   display: flex;
   flex-direction: row;
   align-items: flex-start;
 }
-
 .vertical-flex-container {
   width: 100%;
   display: flex;
   flex-direction: column;
-  &.game-area {
-    align-items: center; /*horizontally centers the content items of the vertical flex boxes */
-  }
-  &.nerd-area {
-    color: black;
-  }
+  align-items: center; /*horizontally centers the content items of the vertical flex boxes */
+  padding-bottom: 3em;
   input {
     margin-top: 1em;
     height: 30px;
@@ -74,6 +71,31 @@ html {
   input:active {
     background-color: $button_color;
     color: set-text-color($button_color);
+  }
+  &.info {
+    p {
+      margin-left: 1em;
+      margin-right: 0.5em;
+    }
+
+    input {
+      width: 200px; /*button*/
+    }
+    h4 {
+      margin-top: 1.6em;
+      margin-bottom: 0.7em;
+    }
+    .h6 {
+      margin-top: 1em;
+    }
+    .selector {
+      height: 1.4em; /* radio-button size */
+      margin-top: 0.3em;
+      margin-bottom: 0.8em;
+    }
+    p {
+      margin-top: 0;
+    }
   }
 }
 
@@ -98,6 +120,52 @@ html {
     font-weight: bold;
     &.zero-tile {
       background-color: $zero-tile-color;
+    }
+  }
+}
+
+@media only screen and (max-width: 950px) {
+  /*985px) {*/
+  .horizontal-flex-container {
+    flex-direction: column;
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  .btn {
+    width: 200px;
+    height: 42px;
+  }
+  #custom_input {
+    width: 200px;
+  }
+}
+
+@media only screen and (max-width: 315px) {
+  #custom_input {
+    width: 90%;
+  }
+}
+
+@media only screen and (max-width: 260px) {
+  .btn {
+    width: 190px;
+  }
+  #custom_input {
+    width: 190px;
+  }
+}
+
+@media only screen and (max-width: 210px) {
+  .btn {
+    width: 160px;
+  }
+  #custom_input {
+    width: 160px;
+  }
+  .title-area {
+    input {
+      width: 180px;
     }
   }
 }
