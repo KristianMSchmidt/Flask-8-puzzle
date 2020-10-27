@@ -11,7 +11,6 @@ function set_event_listeners(){
 
     document.getElementById("solve_btn").addEventListener('click', event => {
         if (document.getElementById("solve_btn").value == "Solve"){
-            console.log("Solve")
             search_type = document.querySelector('input[name="search_type"]:checked').value;
             document.getElementById("search_type").value = search_type;
             document.getElementById("ai_solve_status").innerHTML = "Calculating..."
