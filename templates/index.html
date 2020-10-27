@@ -44,11 +44,11 @@
             {% endif %}
         {% endif %}
     </div>   
-    <div class="vertical-flex-container info-area">
+    <div class="vertical-flex-container info">
         {% if not ai_puzzle_is_solved %}  
             <h4>Search algorithm</h4>
-            <label for="ast" class="radiolabel">A*-search</label>
-            <input type="radio" class="selector" id="ast" name="search_type"  value="ast" checked="true">
+            <label for="ast_alt" class="radiolabel">A*-search (Manhattan)</label>
+            <input type="radio" class="selector" id="ast_alt" name="search_type"  value="ast_alt" checked="true">
             <label for="gbfs class="radiolabel">Gready best-first search</label>
             <input type="radio" class="selector" id="gbfs" name="search_type"  value="gbfs">
             <label for="bfs" class="radiolabel">Breadth-first search</label>
@@ -58,7 +58,7 @@
         {% else %}
             <h4>Solution details</h4>
             <p class="h6">Basics:</p>
-            <p>Solution method: {% if search_type=="ast" %}a*{%else%}{{search_type}}{%endif%}</p>   
+            <p>Solution method: {% if search_type=="ast_alt" %}A*{%else%}{{search_type}}{%endif%}</p>   
             <p>#Moves in solution:
                 <a href={{url_for('show_solution_string', full_ai_solution=full_ai_solution)}}>
                 {{ai_num_solution_steps}}</a></p> 
@@ -87,9 +87,11 @@
         <p>{% if human_puzzle_is_solved %}Solved!{% else %}Not solved yet{% endif %}</p>
         <input type="button" id="help_btn" value="Need help?" >
     </div>
-    <div class="vertical-flex-container info-area">
-        {% include "help.html" %}
-    </div>
+    {% if asked_for_help %}
+        <div class="vertical-flex-container info">
+            {% include "help.html" %}
+        </div>
+    {% endif %}
 </div>
 
 <form method="post" action="{{ url_for('index') }}" id="form">

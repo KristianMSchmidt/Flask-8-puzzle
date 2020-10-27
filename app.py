@@ -18,8 +18,6 @@ puzzle_collection = ["rdrdllurrullddrurdululddruuldduuddrr", "ddrruulddruulldrdu
 
 @app.route("/", methods=['GET', 'POST'])
 def index():
-    data = {}
-    data["xx"] = 777
     human_num_solution_steps = ""
     asked_for_help = False
     human_solution = ""
@@ -113,7 +111,7 @@ def index():
             ai_cost = 0
         
         elif request.form['requested_action'] == "help":
-            human_solution_str, human_num_solution_steps, _, _, _, _ = human_puzzle.solve_puzzle("ast")
+            human_solution_str, human_num_solution_steps, _, _, _, _ = human_puzzle.solve_puzzle("ast_alt")
             human_solution_list = convert_solution_string(human_solution_str)
             if len(human_solution_list) > 0:
                 human_solution = human_solution_list[0]
@@ -147,7 +145,6 @@ def index():
         asked_for_help = asked_for_help,
         ai_original_puzzle = ai_original_puzzle._grid,
         full_ai_solution = full_ai_solution,
-        data = data
         ) 
 
 @app.route('/<full_ai_solution>')
