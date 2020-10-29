@@ -36,27 +36,6 @@ class Puzzle:
         This is needed for "heappush" in solve-algorithms to be stable. 
         """
         return self
-    
-    def get_height(self):
-        """
-        Getter for puzzle height
-        Returns an integer
-        """
-        return self._height
-
-    def get_width(self):
-        """
-        Getter for puzzle width
-        Returns an integer
-        """
-        return self._width
-    
-    def get_grid(self):
-        """
-        Getter for puzzle grid
-        Return list of lists
-        """
-        return self._grid  
 
     def clone(self):
         """

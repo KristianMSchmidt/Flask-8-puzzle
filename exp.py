@@ -1,2 +1,4 @@
-x="[1]"
-print(list(x))
+data ={}
+data["num"]=5
+data.num=7
+print(data)

@@ -2,12 +2,10 @@
 {% block title %}8 puzzle{% endblock title%}
 {% block body %}
 
-
 <script>
-    var user = JSON.parse('{{ json_data | tojson | safe}}');
-    console.log(user)
-    var solution_grids = {{ solution_grids|safe }} # forældet - gør det som ovenfor. ja. 
+    js_data = JSON.parse('{{ data | tojson | safe}}');
 </script>
+
 <div class="title-area">
     <h1>8-puzzle</h1>
     <h4>Solve the puzzle yourself (use arrow keys) or try the automatic solver</h4>
@@ -17,144 +15,192 @@
 <div class="horizontal-flex-container">
     <div class="vertical-flex-container game-area">
         <h3>Computer</h3>
-        <p>Sample #{{puzzle_number}}</p>
+        <p>Sample #{{data["puzzle_number"]}}</p>
         <div class="board">
             {% for i in range(3) %}
                 {% for j in range(3) %}
-                    {% if ai_original_puzzle[i][j]==0 %}
-                        <div class="zero-tile" id="{{i|string}}{{j|string}}"></div>
-                    {% else %}
-                        <div id="{{i|string}}{{j|string}}">{{ai_original_puzzle[i][j]}}</div>  
-                    {% endif %}
+                    <div id="ai{{i|string}}{{j|string}}"></div>
                 {% endfor %}
             {% endfor %}
         </div>
-        <p>#Moves: {{ai_cost}}</p> 
-        <p id="ai_solve_status">ai_solve_status</p>
-        <input type="button" id="solve_btn" value="solve_btn">
-        <input type="button" id="show_solution_btn" value="show_solution_btn">
-        <input type="button" id="unsolve_btn" value="unsolve_btn">            
+        <p id="ai_move_count">#Moves: 0</p> 
+        <p id="ai_status">{{data["ai_status_mgs"]}}</p>
+        <input type="button" id="solve_btn" value="Solve">
+        <input type="button" id="reset_btn" value="Reset">    
     </div>  
-    <script src="../static/js/make_move.js"></script>
-
-    <script>
-        document.getElementById("solve_btn").addEventListener('click', event => {
-            document.getElementById("ai_solve_status").innerHTML = "Searching..."
-            search_type = document.querySelector('input[name="search_type"]:checked').value;
-            document.getElementById("search_type").value = search_type;
-            document.getElementById("requested_action").value = "solve_puzzle";
-            document.getElementById("form").submit();
-            })
-        document.getElementById("unsolve_btn").addEventListener('click', event => {
-            document.getElementById("requested_action").value = "unsolve";
-            document.getElementById("form").submit();
-        })
-
-        document.getElementById("new_puzzle_btn").addEventListener('click', event => {
-            document.getElementById("requested_action").value = "new_puzzle";
-            document.getElementById("form").submit();
-        })
-        document.getElementById("show_solution_btn").addEventListener('click', event => {            
-            function myLoop() {         //  create a loop function
-                setTimeout(function() {   //  call a 3s setTimeout when the loop is called
-                    console.log("hej")
-                    for (let i = 0; i < 3; i++) {
-                        for (let j=0; j<3; j++){
-                            element = document.getElementById(i.toString().concat(j.toString()));
-                            if(solution_grids[k][i][j] == 0){
-                                element.classList.add("zero-tile");
-                                element.innerHTML=solution_grids[k][i][j] = "";
-
-                            }
-                            else{
-                                element.innerHTML=solution_grids[k][i][j];
-                                element.classList.remove("zero-tile");
-                            }
-                        }
-                    }
-                    k++;                    //  increment the counter
-                    if (k < "{{ai_num_solution_steps}}") {           //  if the counter < 10, call the loop function
-                        myLoop();             //  ..  again which will trigger another 
-                    }                       //  ..  setTimeout()
-                }, 200);
-            }
-            var k = 0;
-            myLoop() 
-        })
-        </script>
-
-       
-
-
+     
     <div class="vertical-flex-container info">
-        {% if not ai_puzzle_is_solved %}  
+        {% if not data["ai_solution_computed"] %}  
             <h4>Search algorithm</h4>
+            <br>
             <label for="ast_alt" class="radiolabel">A*-search (Manhattan)</label>
-            <input type="radio" class="selector" id="ast_alt" name="search_type"  value="ast_alt" checked="true">
+            <input type="radio" class="selector" id="ast_alt" name="search_type"  value="ast_alt">
             <label for="gbfs class="radiolabel">Gready best-first search</label>
             <input type="radio" class="selector" id="gbfs" name="search_type"  value="gbfs">
             <label for="bfs" class="radiolabel">Breadth-first search</label>
             <input type="radio" class="selector" id="bfs" name="search_type"  value="bfs">
             <label for="dfs" class="radiolabel">Depth-first search</label>
             <input type="radio" class="selector" id="dfs" name="search_type" value="dfs">
+            <script>
+                document.getElementById(js_data["search_type"]).checked = true;
+            </script>
         {% else %}
             <h4>Solution details</h4>
             <p class="h6">Basics:</p>
-            <p>Solution method: {% if search_type=="ast_alt" %}A*{%else%}{{search_type}}{%endif%}</p>   
-            <p>#Moves in solution:
-                <a href={{url_for('show_solution_string', ai_solution_string=ai_solution_string)}}>
-                {{ai_num_solution_steps}}</a></p> 
-            <p>Running time: {{running_time}}s</p>
+            <p>Solution method: 
+                {% if data["search_type"]=="ast_alt" %}
+                    A*
+                {%else%}
+                    {{data["search_type"]}}
+                {%endif%}
+            </p>   
+            <p> #Moves in solution:
+                <a href={{url_for('show_solution_string', ai_solution_string=data['ai_solution_string'])}}>
+                {{data["ai_num_solution_steps"]}}</a>
+            </p> 
+            <p>Running time: {{data["running_time"]}}s</p>
             <p class="h6">Nerd stuff:</p>
-            <p>Max search depth: {{max_search_depth}}</p> 
-            <p>Max Ram Usage: {{max_ram_usage}}MB</p>   
-            <p>#Expanded nodes: {{num_expanded_nodes}}</p> 
+            <p>Max search depth: {{data["max_search_depth"]}}</p> 
+            <p>Max Ram Usage: {{data["max_ram_usage"]}}MB</p>   
+            <p>#Expanded nodes: {{data["num_expanded_nodes"]}}</p> 
         {% endif %}
     </div> 
     <div class="vertical-flex-container game-area">
         <h3>You</h3>
-        <p>Sample #{{puzzle_number}}</p>
+        <p>Sample #{{data["puzzle_number"]}}</p>
         <div class="board">
             {% for i in range(3) %}
                 {% for j in range(3) %}
-                    {% if human_puzzle[i][j]==0 %}
-                        <div class="zero-tile"></div>
-                    {% else %}
-                        <div>{{human_puzzle[i][j]}}</div>   
-                    {% endif %}
+                    <div id="human{{i|string}}{{j|string}}"></div>
                 {% endfor %}
             {% endfor %}
         </div>
-        <p>#Moves: {{human_cost}}</p> 
-        <p>{% if human_puzzle_is_solved %}Solved!{% else %}Not solved yet{% endif %}</p>
+        <p id="human_move_count">#Moves: {{data["human_move_count"]}}</p> 
+        <p>{% if data["human_puzzle_is_solved"] %}Solved!{% else %}Not solved yet{% endif %}</p>
         <input type="button" id="help_btn" value="Need help?" >
+    </div> 
+    {% if data["requested_action"] == "help" %}
+    <div class="vertical-flex-container info">
+        {% include "help.html" %}
     </div>
-    {% if asked_for_help %}
-        <div class="vertical-flex-container info">
-            {% include "help.html" %}
-        </div>
-    {% endif %}
+    {% endif %} 
 </div>
 
+
 <form method="post" action="{{ url_for('index') }}" id="form">
-    <input type="hidden" name="requested_action" id="requested_action" value = "">
-    <input type="hidden" name="search_type" id="search_type" value="{{search_type}}">
-    <input type="hidden" name="direction" id="direction" value="">
-    <input type="hidden" name="human_steps_made" id="human_steps_made" value ="">
-    <input type="hidden" name="ai_original_puzzle" value="{{ai_original_puzzle}}">
-    <input type="hidden" name="puzzle_number" value={{puzzle_number}}>
-    <input type="hidden" name="ai_puzzle" value="{{ai_puzzle}}">
-    <input type="hidden" name="human_puzzle" value="{{human_puzzle}}">
-    <input type="hidden" name="ai_cost" value="{{ai_cost}}">
-    <input type="hidden" name="human_cost" value="{{human_cost}}">
-    <input type="hidden" name="num_expanded_nodes" value="{{num_expanded_nodes}}">
-    <input type="hidden" name="max_search_depth" value="{{max_search_depth}}">
-    <input type="hidden" name="max_ram_usage" value="{{max_ram_usage}}">
-    <input type="hidden" name="ai_solution_string" value={{ai_solution_string}}>
-    <input type="hidden" name="running_time" value="{{running_time}}">
-    <input type="hidden" name="ai_num_solution_steps" value="{{ai_num_solution_steps}}">
+    <input type="hidden" name="json_data" id="json_data" value = "">
 </form>
 
+<script>
+    function render_puzzle(puzzle, agent){
+        for (let i=0; i < 3; i++) {
+            for (let j=0; j<3; j++){
+                id = agent + i.toString() + j.toString();
+                element = document.getElementById(id);
+                if(puzzle[i][j] == 0){
+                    element.classList.add("zero-tile");
+                    element.innerHTML= "";
+                }
+                else{
+                    element.innerHTML=puzzle[i][j];
+                    element.classList.remove("zero-tile");
+                }
+            }
+         }
+    }
+    render_puzzle(js_data["ai_puzzle"], "ai")
+    render_puzzle(js_data["human_puzzle"], "human")
+    
+    function submit(){
+        document.getElementById("json_data").value = JSON.stringify(js_data)
+        document.getElementById("form").submit();
+    }
+    function set_event_listeners(){
+        document.getElementById("new_puzzle_btn").addEventListener('click', event => {
+            js_data["requested_action"] = "new_puzzle"
+            submit()
+        })
+        function human_move(direction){
+            js_data["direction"] = direction;
+            js_data["requested_action"] = "human_move"
+            submit()
+        }
+        document.addEventListener('keydown', event => {
+            switch (event.keyCode){
+                case 37: human_move("l");
+                break;
+
+                case 39: human_move("r");
+                break;
+
+                case 38: human_move("u"); 
+                break;
+
+                case 40: human_move("d");
+                break;
+            }
+        }); 
+    
+        document.getElementById("solve_btn").addEventListener('click', event => {
+                document.getElementById("ai_status").innerHTML = "Searching..."
+                search_type = document.querySelector('input[name="search_type"]:checked').value;
+                js_data["search_type"] = search_type;
+                js_data["requested_action"] = "solve_ai_puzzle"
+                submit()
+            });
+
+        document.getElementById("reset_btn").addEventListener('click', event => {
+                js_data["requested_action"] = "reset_ai"
+                submit()                
+            })
+
+        document.getElementById("help_btn").addEventListener('click', event => {
+            js_data["requested_action"] = "help"
+            submit()
+        })
+    }      
+    set_event_listeners();
+
+    function animate_solution() {         //  create a loop function
+        setTimeout(function() {   //  call a 3s setTimeout when the loop is called
+            let puzzle = js_data['animated_solution'][k]
+            render_puzzle(puzzle, "ai")
+            k++;                    //  increment the counter
+            document.getElementById("ai_move_count").innerHTML = `#Moves: ${k}`;
+            if (k < js_data['ai_num_solution_steps']) {           //  if the counter < 10, call the loop function
+                animate_solution();             //  ..  again which will trigger another 
+            } 
+            else{
+                document.getElementById("ai_status").innerHTML = "Solved!"
+
+            }                      //  ..  setTimeout()
+        }, 150);
+    }
+    var k = 0;
+
+    if(js_data['requested_action'] == 'solve_ai_puzzle'){
+        document.getElementById("solve_btn").style.display = "none";
+        animate_solution()
+    }
+
+    // hide buttons 
+    if(js_data["ai_solution_computed"]){  
+        document.getElementById("solve_btn").style.display = "none";
+    }
+    else{
+        document.getElementById("reset_btn").style.display = "none";
+    }
+
+    if(js_data["ai_solution_computed"]){
+        if (js_data["requested_action"] == "human_move" ||js_data["requested_action"] == "help"){
+        // if animated solution is interrupted by human input, show solved ai puzzle
+        solved_puzzle = js_data['animated_solution'][js_data['ai_num_solution_steps'] - 1]
+        render_puzzle(solved_puzzle, "ai")
+        document.getElementById("ai_status").innerHTML = "Solved!"
+         }
+        }
+
+</script>
 
 
 {% endblock body %}
