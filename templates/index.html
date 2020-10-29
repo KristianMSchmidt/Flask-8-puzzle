@@ -1,8 +1,13 @@
 {% extends 'base.html' %}
 {% block title %}8 puzzle{% endblock title%}
-
 {% block body %}
 
+
+<script>
+    var user = JSON.parse('{{ json_data | tojson | safe}}');
+    console.log(user)
+    var solution_grids = {{ solution_grids|safe }} # forældet - gør det som ovenfor. ja. 
+</script>
 <div class="title-area">
     <h1>8-puzzle</h1>
     <h4>Solve the puzzle yourself (use arrow keys) or try the automatic solver</h4>
@@ -16,36 +21,71 @@
         <div class="board">
             {% for i in range(3) %}
                 {% for j in range(3) %}
-                    {% if ai_puzzle[i][j]==0 %}
-                        <div class="zero-tile"></div>
+                    {% if ai_original_puzzle[i][j]==0 %}
+                        <div class="zero-tile" id="{{i|string}}{{j|string}}"></div>
                     {% else %}
-                        <div>{{ai_puzzle[i][j]}}</div>   
+                        <div id="{{i|string}}{{j|string}}">{{ai_original_puzzle[i][j]}}</div>  
                     {% endif %}
                 {% endfor %}
             {% endfor %}
         </div>
         <p>#Moves: {{ai_cost}}</p> 
-        <p id="ai_solve_status">
-            {% if ai_puzzle_is_solved %}
-                {% if show_ai_solution_step %}
-                    Showing solution...
-                {% else %}
-                    Solved!
-                {% endif %}
-            {% else %}
-                Not solved yet
-            {% endif %}
-        </p>
-        {% if not ai_puzzle_is_solved %}
-           <input type="button" id="solve_btn" value="Solve">
-        {% else %}
-            {% if show_ai_solution_step %}
-                <input type="button" id="solve_btn" value="Solve" disabled="true">
-            {% else %}
-                <input type="button" id="solve_btn" value="Unsolve">            
-            {% endif %}
-        {% endif %}
-    </div>   
+        <p id="ai_solve_status">ai_solve_status</p>
+        <input type="button" id="solve_btn" value="solve_btn">
+        <input type="button" id="show_solution_btn" value="show_solution_btn">
+        <input type="button" id="unsolve_btn" value="unsolve_btn">            
+    </div>  
+    <script src="../static/js/make_move.js"></script>
+
+    <script>
+        document.getElementById("solve_btn").addEventListener('click', event => {
+            document.getElementById("ai_solve_status").innerHTML = "Searching..."
+            search_type = document.querySelector('input[name="search_type"]:checked').value;
+            document.getElementById("search_type").value = search_type;
+            document.getElementById("requested_action").value = "solve_puzzle";
+            document.getElementById("form").submit();
+            })
+        document.getElementById("unsolve_btn").addEventListener('click', event => {
+            document.getElementById("requested_action").value = "unsolve";
+            document.getElementById("form").submit();
+        })
+
+        document.getElementById("new_puzzle_btn").addEventListener('click', event => {
+            document.getElementById("requested_action").value = "new_puzzle";
+            document.getElementById("form").submit();
+        })
+        document.getElementById("show_solution_btn").addEventListener('click', event => {            
+            function myLoop() {         //  create a loop function
+                setTimeout(function() {   //  call a 3s setTimeout when the loop is called
+                    console.log("hej")
+                    for (let i = 0; i < 3; i++) {
+                        for (let j=0; j<3; j++){
+                            element = document.getElementById(i.toString().concat(j.toString()));
+                            if(solution_grids[k][i][j] == 0){
+                                element.classList.add("zero-tile");
+                                element.innerHTML=solution_grids[k][i][j] = "";
+
+                            }
+                            else{
+                                element.innerHTML=solution_grids[k][i][j];
+                                element.classList.remove("zero-tile");
+                            }
+                        }
+                    }
+                    k++;                    //  increment the counter
+                    if (k < "{{ai_num_solution_steps}}") {           //  if the counter < 10, call the loop function
+                        myLoop();             //  ..  again which will trigger another 
+                    }                       //  ..  setTimeout()
+                }, 200);
+            }
+            var k = 0;
+            myLoop() 
+        })
+        </script>
+
+       
+
+
     <div class="vertical-flex-container info">
         {% if not ai_puzzle_is_solved %}  
             <h4>Search algorithm</h4>
@@ -62,7 +102,7 @@
             <p class="h6">Basics:</p>
             <p>Solution method: {% if search_type=="ast_alt" %}A*{%else%}{{search_type}}{%endif%}</p>   
             <p>#Moves in solution:
-                <a href={{url_for('show_solution_string', full_ai_solution=full_ai_solution)}}>
+                <a href={{url_for('show_solution_string', ai_solution_string=ai_solution_string)}}>
                 {{ai_num_solution_steps}}</a></p> 
             <p>Running time: {{running_time}}s</p>
             <p class="h6">Nerd stuff:</p>
@@ -110,22 +150,11 @@
     <input type="hidden" name="num_expanded_nodes" value="{{num_expanded_nodes}}">
     <input type="hidden" name="max_search_depth" value="{{max_search_depth}}">
     <input type="hidden" name="max_ram_usage" value="{{max_ram_usage}}">
-    <input type="hidden" name="ai_solution" value={{ai_solution}}>
+    <input type="hidden" name="ai_solution_string" value={{ai_solution_string}}>
     <input type="hidden" name="running_time" value="{{running_time}}">
     <input type="hidden" name="ai_num_solution_steps" value="{{ai_num_solution_steps}}">
-    <input type="hidden" name="full_ai_solution" value="{{full_ai_solution}}">
 </form>
 
-<script src="../static/js/eventlisteners.js"></script>
-<script src="../static/js/make_move.js"></script>
 
-<script>
-    set_event_listeners()
-    "{% if show_ai_solution_step %}"     
-         /* loop untill all steps ai_solution is shown */
-        document.getElementById("requested_action").value = "show_ai_solution_step";
-        document.getElementById("form").submit();
-    "{% endif %}"
-</script>
 
 {% endblock body %}

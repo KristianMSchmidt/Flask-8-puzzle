@@ -36,6 +36,27 @@ class Puzzle:
         This is needed for "heappush" in solve-algorithms to be stable. 
         """
         return self
+    
+    def get_height(self):
+        """
+        Getter for puzzle height
+        Returns an integer
+        """
+        return self._height
+
+    def get_width(self):
+        """
+        Getter for puzzle width
+        Returns an integer
+        """
+        return self._width
+    
+    def get_grid(self):
+        """
+        Getter for puzzle grid
+        Return list of lists
+        """
+        return self._grid  
 
     def clone(self):
         """
@@ -551,6 +572,14 @@ class Puzzle:
             if current_search_depth > max_search_depth:
                 max_search_depth = current_search_depth
 
+    def solve_puzzle_rigid(self):
+        """
+        This solution method is very different from the ones above. The solution is not found by
+        search, but by a rigid solution algorithm that always works. 
+        This method is fast (short calculation time), but the number of moves in the 
+        solution will probably be longer than the number of moves found by the best search algorithms. 
+        """
+        
 
     def solve_puzzle(self, method, print_results = False):
         """
