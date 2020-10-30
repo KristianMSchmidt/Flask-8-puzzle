@@ -1,37 +1,25 @@
-function set_event_listeners(){
-    document.getElementById("new_puzzle_btn").addEventListener('click', event => {
-        document.getElementById("requested_action").value = "new_puzzle";
-        document.getElementById("form").submit();
-    })
+function set_eventlisteners(js_data){
 
-    document.getElementById("help_btn").addEventListener('click', event => {
-        document.getElementById("requested_action").value = "help";
+    function submit(){
+        js_data['animated_solution'] = [];
+        document.getElementById("json_data").value = JSON.stringify(js_data);
         document.getElementById("form").submit();
-    })
-
-    document.getElementById("solve_btn").addEventListener('click', event => {
-        if (document.getElementById("solve_btn").value == "Solve"){
-            console.log("Solve")
-            search_type = document.querySelector('input[name="search_type"]:checked').value;
-            document.getElementById("search_type").value = search_type;
-            document.getElementById("ai_solve_status").innerHTML = "Calculating..."
-            document.getElementById("requested_action").value = "solve_puzzle";
-            document.getElementById("form").submit();
-        }
-        else{
-            console.log("unsolve")
-            document.getElementById("requested_action").value = "unsolve";
-            document.getElementById("form").submit();
-        }
-    })
+    }
 
     function human_move(direction){
-        document.getElementById("requested_action").value = "human_move";
-        document.getElementById("human_steps_made").value= "{{human_steps_made}}" + direction;
-        document.getElementById("direction").value=direction;
-        document.getElementById("form").submit(); 
+        js_data["direction"] = direction;
+        js_data["requested_action"] = "human_move"
+        submit()
     }
-    
+
+    //Disable default window scrolling on arrow-keys
+    window.addEventListener("keydown", function(e) {
+        // space and arrow keys
+        if([37, 38, 39, 40].indexOf(e.keyCode) > -1) {
+            e.preventDefault();
+        }
+    }, false);
+
     document.addEventListener('keydown', event => {
         switch (event.keyCode){
             case 37: human_move("l");
@@ -47,5 +35,37 @@ function set_event_listeners(){
             break;
         }
     }); 
-}
 
+    document.getElementById("new_puzzle_btn").addEventListener('click', event => {
+        js_data["requested_action"] = "new_puzzle";
+        submit();
+    })
+
+    document.getElementById("solve_btn").addEventListener('click', event => {
+            document.getElementById("ai_status").innerHTML = "Searching...";
+            //search_type = document.querySelector('input[name="search_type"]:checked').value;
+            //js_data["search_type"] = search_type;
+            js_data["requested_action"] = "solve_ai_puzzle";
+            submit();
+        });
+
+    document.getElementById("reset_btn").addEventListener('click', event => {
+            js_data["requested_action"] = "reset_ai";
+            submit();                
+        })
+
+    document.getElementById("help_btn").addEventListener('click', event => {
+        js_data["requested_action"] = "help";
+        submit();
+    })
+
+    search_types = ["ast_alt", "gbfs", "bfs", "dfs"]
+    if (!js_data["ai_solution_computed"]){
+        for (let i = 0; i < search_types.length; i++) {
+            document.getElementById(search_types[i]).addEventListener('change', event => {
+                js_data["search_type"] = search_types[i];
+            })
+            
+        }        
+    }
+}

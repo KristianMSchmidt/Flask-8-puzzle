@@ -1,129 +1,82 @@
 {% extends 'base.html' %}
 {% block title %}8 puzzle{% endblock title%}
-
 {% block body %}
 
 <div class="title-area">
     <h1>8-puzzle</h1>
-    <h4>Solve the puzzle yourself (use arrow keys) or try the automatic solver</h4>
+    <h4>Try the automatic solver or solve the puzzle yourself (use arrow keys)</h4>
     <input type="button" id="new_puzzle_btn" value="New Puzzle">
 </div>
 
 <div class="horizontal-flex-container">
     <div class="vertical-flex-container game-area">
         <h3>Computer</h3>
-        <p>Sample #{{puzzle_number}}</p>
+        <p>Sample #{{data["puzzle_number"]}}</p>
         <div class="board">
             {% for i in range(3) %}
                 {% for j in range(3) %}
-                    {% if ai_puzzle[i][j]==0 %}
-                        <div class="zero-tile"></div>
-                    {% else %}
-                        <div>{{ai_puzzle[i][j]}}</div>   
-                    {% endif %}
+                    <div id="ai{{i|string}}{{j|string}}"></div>
                 {% endfor %}
             {% endfor %}
         </div>
-        <p>#Moves: {{ai_cost}}</p> 
-        <p id="ai_solve_status">
-            {% if ai_puzzle_is_solved %}
-                {% if show_ai_solution_step %}
-                    Showing solution...
-                {% else %}
-                    Solved!
-                {% endif %}
-            {% else %}
-                Not solved yet
-            {% endif %}
-        </p>
-        {% if not ai_puzzle_is_solved %}
-           <input type="button" id="solve_btn" value="Solve">
-        {% else %}
-            {% if show_ai_solution_step %}
-                <input type="button" id="solve_btn" value="Solve" disabled="true">
-            {% else %}
-                <input type="button" id="solve_btn" value="Unsolve">            
-            {% endif %}
-        {% endif %}
-    </div>   
-    <div class="vertical-flex-container info">
-        {% if not ai_puzzle_is_solved %}  
-            <h4>Search algorithm</h4>
-            <label for="ast_alt" class="radiolabel">A*-search (Manhattan)</label>
-            <input type="radio" class="selector" id="ast_alt" name="search_type"  value="ast_alt" checked="true">
-            <label for="gbfs class="radiolabel">Gready best-first search</label>
-            <input type="radio" class="selector" id="gbfs" name="search_type"  value="gbfs">
-            <label for="bfs" class="radiolabel">Breadth-first search</label>
-            <input type="radio" class="selector" id="bfs" name="search_type"  value="bfs">
-            <label for="dfs" class="radiolabel">Depth-first search</label>
-            <input type="radio" class="selector" id="dfs" name="search_type" value="dfs">
-        {% else %}
-            <h4>Solution details</h4>
-            <p class="h6">Basics:</p>
-            <p>Solution method: {% if search_type=="ast_alt" %}A*{%else%}{{search_type}}{%endif%}</p>   
-            <p>#Moves in solution:
-                <a href={{url_for('show_solution_string', full_ai_solution=full_ai_solution)}}>
-                {{ai_num_solution_steps}}</a></p> 
-            <p>Running time: {{running_time}}s</p>
-            <p class="h6">Nerd stuff:</p>
-            <p>Max search depth: {{max_search_depth}}</p> 
-            <p>Max Ram Usage: {{max_ram_usage}}MB</p>   
-            <p>#Expanded nodes: {{num_expanded_nodes}}</p> 
-        {% endif %}
-    </div> 
-    <div class="vertical-flex-container game-area">
-        <h3>You</h3>
-        <p>Sample #{{puzzle_number}}</p>
-        <div class="board">
-            {% for i in range(3) %}
-                {% for j in range(3) %}
-                    {% if human_puzzle[i][j]==0 %}
-                        <div class="zero-tile"></div>
-                    {% else %}
-                        <div>{{human_puzzle[i][j]}}</div>   
-                    {% endif %}
-                {% endfor %}
-            {% endfor %}
-        </div>
-        <p>#Moves: {{human_cost}}</p> 
-        <p>{% if human_puzzle_is_solved %}Solved!{% else %}Not solved yet{% endif %}</p>
-        <input type="button" id="help_btn" value="Need help?" >
+        <p id="ai_move_count">#Moves: 0</p> 
+        <p id="ai_status">{{data["ai_status_mgs"]}}</p>
+        <input type="button" id="solve_btn" value="Solve">
+        <input type="button" id="reset_btn" value="Reset">    
+    </div>  
+    <div class="vertical-flex-container info" id="select-algorithm-area">
+        <h4>Search algorithm</h4>
+        <br>
+        <label for="ast_alt" class="radiolabel">A*-search (Manhattan)</label>
+        <input type="radio" class="selector" id="ast_alt" name="search_type"  value="ast_alt">
+        <label for="gbfs class="radiolabel">Gready best-first search</label>
+        <input type="radio" class="selector" id="gbfs" name="search_type"  value="gbfs">
+        <label for="bfs" class="radiolabel">Breadth-first search</label>
+        <input type="radio" class="selector" id="bfs" name="search_type"  value="bfs">
+        <label for="dfs" class="radiolabel">Depth-first search</label>
+        <input type="radio" class="selector" id="dfs" name="search_type" value="dfs">
     </div>
-    {% if asked_for_help %}
-        <div class="vertical-flex-container info">
-            {% include "help.html" %}
+    <div class="vertical-flex-container info" id="solution-details-area">
+        <h4>Solution details</h4>
+        <p class="h6">Basics:</p>
+        <p id="solution-method"></p>   
+        <p>#Moves in solution:
+            <a href={{url_for('show_solution_string', ai_solution_string=data['ai_solution_string'])}}>
+            {{data["ai_num_solution_steps"]}}</a>
+        </p> 
+        <p>Running time: {{data["running_time"]}}s</p>
+        <p class="h6">Nerd stuff:</p>
+        <p>Max search depth: {{data["max_search_depth"]}}</p> 
+        <p>Max Ram Usage: {{data["max_ram_usage"]}}MB</p>   
+        <p>#Expanded nodes: {{data["num_expanded_nodes"]}}</p> 
+    </div> 
+    <div class="vertical-flex-container game-area" id="human-board">
+        <h3>You</h3>
+        <p>Sample #{{data["puzzle_number"]}}</p>
+        <div class="board">
+            {% for i in range(3) %}
+                {% for j in range(3) %}
+                    <div id="human{{i|string}}{{j|string}}"></div>
+                {% endfor %}
+            {% endfor %}
         </div>
-    {% endif %}
+        <p id="human_move_count">#Moves: {{data["human_move_count"]}}</p> 
+        <p id="human_puzzle_status"></p>
+        <input type="button" id="help_btn" value="Need help?" >
+    </div> 
+    <div class="vertical-flex-container info" id="help-container">
+        {% include "help.html" %}
+    </div>
 </div>
 
+
 <form method="post" action="{{ url_for('index') }}" id="form">
-    <input type="hidden" name="requested_action" id="requested_action" value = "">
-    <input type="hidden" name="search_type" id="search_type" value="{{search_type}}">
-    <input type="hidden" name="direction" id="direction" value="">
-    <input type="hidden" name="human_steps_made" id="human_steps_made" value ="">
-    <input type="hidden" name="ai_original_puzzle" value="{{ai_original_puzzle}}">
-    <input type="hidden" name="puzzle_number" value={{puzzle_number}}>
-    <input type="hidden" name="ai_puzzle" value="{{ai_puzzle}}">
-    <input type="hidden" name="human_puzzle" value="{{human_puzzle}}">
-    <input type="hidden" name="ai_cost" value="{{ai_cost}}">
-    <input type="hidden" name="human_cost" value="{{human_cost}}">
-    <input type="hidden" name="num_expanded_nodes" value="{{num_expanded_nodes}}">
-    <input type="hidden" name="max_search_depth" value="{{max_search_depth}}">
-    <input type="hidden" name="max_ram_usage" value="{{max_ram_usage}}">
-    <input type="hidden" name="ai_solution" value={{ai_solution}}>
-    <input type="hidden" name="running_time" value="{{running_time}}">
-    <input type="hidden" name="ai_num_solution_steps" value="{{ai_num_solution_steps}}">
-    <input type="hidden" name="full_ai_solution" value="{{full_ai_solution}}">
+    <input type="hidden" name="json_data" id="json_data" value = "">
 </form>
 
+<script>js_data = JSON.parse('{{ data | tojson | safe}}')</script>  
 <script src="../static/js/eventlisteners.js"></script>
-<script>
-    set_event_listeners()
-    "{% if show_ai_solution_step %}"     
-         /* loop untill all steps ai_solution is shown */
-        document.getElementById("requested_action").value = "show_ai_solution_step";
-        document.getElementById("form").submit();
-    "{% endif %}"
-</script>
+<script src="../static/js/render_puzzle.js"></script>
+<script src= "../static/js/main.js"></script>
 
 {% endblock body %}

@@ -551,6 +551,14 @@ class Puzzle:
             if current_search_depth > max_search_depth:
                 max_search_depth = current_search_depth
 
+    def solve_puzzle_rigid(self):
+        """
+        This solution method is very different from the ones above. The solution is not found by
+        search, but by a rigid solution algorithm that always works. 
+        This method is fast (short calculation time), but the number of moves in the 
+        solution will probably be longer than the number of moves found by the best search algorithms. 
+        """
+        
 
     def solve_puzzle(self, method, print_results = False):
         """
