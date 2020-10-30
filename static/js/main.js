@@ -18,7 +18,7 @@ if (js_data["ai_solution_computed"]){
     // Show solution method in a nice way
     method_info = "Solution method: " 
     if(js_data["search_type"]=="ast_alt"){
-        method_info += "A*-search"
+        method_info += "A*"
     } else if(js_data["search_type"]=="gbfs"){
         method_info += "GBFS"
     } else if(js_data["search_type"]=="bfs"){

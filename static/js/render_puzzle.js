@@ -19,7 +19,7 @@ function show_solution_step(move_num) {
     /* shows this animated computer solution */   
     
     if(js_data['ai_num_solution_steps'] < 100){
-        var time_delay = 350;
+        var time_delay = 250;
     } else{
         var time_delay = 2;
     }
