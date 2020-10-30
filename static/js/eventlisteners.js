@@ -1,6 +1,7 @@
 function set_eventlisteners(js_data){
 
     function submit(){
+        js_data['animated_solution'] = [];
         document.getElementById("json_data").value = JSON.stringify(js_data);
         document.getElementById("form").submit();
     }
@@ -10,6 +11,14 @@ function set_eventlisteners(js_data){
         js_data["requested_action"] = "human_move"
         submit()
     }
+
+    //Disable default window scrolling on arrow-keys
+    window.addEventListener("keydown", function(e) {
+        // space and arrow keys
+        if([37, 38, 39, 40].indexOf(e.keyCode) > -1) {
+            e.preventDefault();
+        }
+    }, false);
 
     document.addEventListener('keydown', event => {
         switch (event.keyCode){
@@ -51,7 +60,6 @@ function set_eventlisteners(js_data){
     })
 
     search_types = ["ast_alt", "gbfs", "bfs", "dfs"]
-    
     if (!js_data["ai_solution_computed"]){
         for (let i = 0; i < search_types.length; i++) {
             document.getElementById(search_types[i]).addEventListener('change', event => {

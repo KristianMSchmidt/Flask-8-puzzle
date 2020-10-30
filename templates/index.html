@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 {% block title %}8 puzzle{% endblock title%}
 {% block body %}
-{{data}}
 
 <div class="title-area">
     <h1>8-puzzle</h1>
@@ -25,41 +24,33 @@
         <input type="button" id="solve_btn" value="Solve">
         <input type="button" id="reset_btn" value="Reset">    
     </div>  
-     
-    <div class="vertical-flex-container info">
-        {% if not data["ai_solution_computed"] %}  
-            <h4>Search algorithm</h4>
-            <br>
-            <label for="ast_alt" class="radiolabel">A*-search (Manhattan)</label>
-            <input type="radio" class="selector" id="ast_alt" name="search_type"  value="ast_alt">
-            <label for="gbfs class="radiolabel">Gready best-first search</label>
-            <input type="radio" class="selector" id="gbfs" name="search_type"  value="gbfs">
-            <label for="bfs" class="radiolabel">Breadth-first search</label>
-            <input type="radio" class="selector" id="bfs" name="search_type"  value="bfs">
-            <label for="dfs" class="radiolabel">Depth-first search</label>
-            <input type="radio" class="selector" id="dfs" name="search_type" value="dfs">
-        {% else %}
-            <h4>Solution details</h4>
-            <p class="h6">Basics:</p>
-            <p>Solution method: 
-                {% if data["search_type"]=="ast_alt" %}
-                    A*
-                {%else%}
-                    {{data["search_type"]}}
-                {%endif%}
-            </p>   
-            <p> #Moves in solution:
-                <a href={{url_for('show_solution_string', ai_solution_string=data['ai_solution_string'])}}>
-                {{data["ai_num_solution_steps"]}}</a>
-            </p> 
-            <p>Running time: {{data["running_time"]}}s</p>
-            <p class="h6">Nerd stuff:</p>
-            <p>Max search depth: {{data["max_search_depth"]}}</p> 
-            <p>Max Ram Usage: {{data["max_ram_usage"]}}MB</p>   
-            <p>#Expanded nodes: {{data["num_expanded_nodes"]}}</p> 
-        {% endif %}
+    <div class="vertical-flex-container info" id="select-algorithm-area">
+        <h4>Search algorithm</h4>
+        <br>
+        <label for="ast_alt" class="radiolabel">A*-search (Manhattan)</label>
+        <input type="radio" class="selector" id="ast_alt" name="search_type"  value="ast_alt">
+        <label for="gbfs class="radiolabel">Gready best-first search</label>
+        <input type="radio" class="selector" id="gbfs" name="search_type"  value="gbfs">
+        <label for="bfs" class="radiolabel">Breadth-first search</label>
+        <input type="radio" class="selector" id="bfs" name="search_type"  value="bfs">
+        <label for="dfs" class="radiolabel">Depth-first search</label>
+        <input type="radio" class="selector" id="dfs" name="search_type" value="dfs">
+    </div>
+    <div class="vertical-flex-container info" id="solution-details-area">
+        <h4>Solution details</h4>
+        <p class="h6">Basics:</p>
+        <p id="solution-method"></p>   
+        <p>#Moves in solution:
+            <a href={{url_for('show_solution_string', ai_solution_string=data['ai_solution_string'])}}>
+            {{data["ai_num_solution_steps"]}}</a>
+        </p> 
+        <p>Running time: {{data["running_time"]}}s</p>
+        <p class="h6">Nerd stuff:</p>
+        <p>Max search depth: {{data["max_search_depth"]}}</p> 
+        <p>Max Ram Usage: {{data["max_ram_usage"]}}MB</p>   
+        <p>#Expanded nodes: {{data["num_expanded_nodes"]}}</p> 
     </div> 
-    <div class="vertical-flex-container game-area">
+    <div class="vertical-flex-container game-area" id="human-board">
         <h3>You</h3>
         <p>Sample #{{data["puzzle_number"]}}</p>
         <div class="board">
@@ -70,14 +61,12 @@
             {% endfor %}
         </div>
         <p id="human_move_count">#Moves: {{data["human_move_count"]}}</p> 
-        <p>{% if data["human_puzzle_is_solved"] %}Solved!{% else %}Not solved yet{% endif %}</p>
+        <p id="human_puzzle_status"></p>
         <input type="button" id="help_btn" value="Need help?" >
     </div> 
-    {% if data["requested_action"] == "help" %}
-        <div class="vertical-flex-container info">
-            {% include "help.html" %}
-        </div>
-    {% endif %} 
+    <div class="vertical-flex-container info" id="help-container">
+        {% include "help.html" %}
+    </div>
 </div>
 
 
@@ -85,46 +74,9 @@
     <input type="hidden" name="json_data" id="json_data" value = "">
 </form>
 
+<script>js_data = JSON.parse('{{ data | tojson | safe}}')</script>  
 <script src="../static/js/eventlisteners.js"></script>
 <script src="../static/js/render_puzzle.js"></script>
-
-<script>
-    // ai GAME states
-    js_data = JSON.parse('{{ data | tojson | safe}}');
-    
-    // always do this: 
-    render_puzzle(js_data["ai_puzzle"], "ai")
-    render_puzzle(js_data["human_puzzle"], "human")
-    set_eventlisteners(js_data);
-
-    // setup radio button
-    if (!js_data["ai_solution_computed"]){
-        document.getElementById(js_data["search_type"]).checked = true;
-    }
-
-    if(js_data['requested_action'] == 'solve_ai_puzzle'){
-        document.getElementById("solve_btn").style.display = "none";
-        //animate solution
-        show_solution_step(0)
-    }
-
-    // hide buttons 
-    if(js_data["ai_solution_computed"]){  
-        document.getElementById("solve_btn").style.display = "none";
-    }
-    else{
-        document.getElementById("reset_btn").style.display = "none";
-    }
-
-    if(js_data["ai_solution_computed"]){
-        if (js_data["requested_action"] == "human_move" ||js_data["requested_action"] == "help"){
-        // if animated solution is interrupted by human input, show solved ai puzzle
-        solved_puzzle = js_data['animated_solution'][js_data['ai_num_solution_steps'] - 1]
-        render_puzzle(solved_puzzle, "ai")
-        document.getElementById("ai_status").innerHTML = "Solved!"
-         }
-        }
-</script>
-
+<script src= "../static/js/main.js"></script>
 
 {% endblock body %}

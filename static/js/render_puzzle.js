@@ -16,10 +16,14 @@ function render_puzzle(puzzle, agent){
 }
 
 function show_solution_step(move_num) {  
-    // shows this animated computer solution    
+    /* shows this animated computer solution */   
     
-    const time_delay = 150;
-
+    if(js_data['ai_num_solution_steps'] < 100){
+        var time_delay = 350;
+    } else{
+        var time_delay = 2;
+    }
+    
     setTimeout(function() {   //  
         let puzzle = js_data['animated_solution'][move_num]
         render_puzzle(puzzle, "ai")

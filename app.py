@@ -27,16 +27,16 @@ def index():
     if action == 'new_puzzle':
         puzzle_number = random_choice(range(len(puzzle_collection)))
         puzzle = Puzzle(3,3,puzzle_collection[puzzle_number])._grid 
-        puzzle_number += 1
-        search_type = "ast_alt"
         data = {
-            "puzzle_number":puzzle_number,
+            "puzzle_number":puzzle_number+1,
             "ai_puzzle": puzzle,
             "human_puzzle": puzzle,
             "human_move_count": 0,
             "human_puzzle_is_solved": False,
             "ai_status_mgs": "Not solved yet",
-            "search_type" : search_type
+            "search_type" : "ast_alt",
+            "requested_action" : "new_puzzle",
+            "ai_solution_computed": False
             }
 
     elif action == 'human_move':
