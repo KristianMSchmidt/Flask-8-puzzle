@@ -62,7 +62,6 @@ if( js_data["requested_action"] == "human_move"){
     window.location = (""+window.location).replace(/#[A-Za-z0-9_]*$/,'')+"#human-board"
 }
 
-
 // If solution to computer puzzle has just been computed, show animation: 
 if(js_data['requested_action'] == 'solve_ai_puzzle'){
     show_solution_step(0)
