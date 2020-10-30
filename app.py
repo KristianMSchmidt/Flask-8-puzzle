@@ -12,15 +12,18 @@ from random import choice as random_choice
 from python.Puzzle import Puzzle
 from python.utils import convert_solution_string
 from python.puzzle_collection import puzzle_collection
+
 app = Flask('__name__')
 
 @app.route("/", methods=['GET', 'POST'])
 def index():
+    
     if request.method == 'GET':
         action = "new_puzzle"
     else: 
         data = json.loads(request.form["json_data"])   #return(json.dumps(data))
         action = data["requested_action"]
+
     if action == 'new_puzzle':
         puzzle_number = random_choice(range(len(puzzle_collection)))
         puzzle = Puzzle(3,3,puzzle_collection[puzzle_number])._grid 
@@ -45,7 +48,7 @@ def index():
             data["human_puzzle_is_solved"] = human_puzzle.is_solved()
         except:
             pass
-    
+
     elif action == 'solve_ai_puzzle':
         ai_puzzle = Puzzle(3,3, data["ai_puzzle"])
         ai_solution_string, ai_num_solution_steps, num_expanded_nodes, max_search_depth, running_time, max_ram_usage \
@@ -76,11 +79,13 @@ def index():
         human_num_solution_steps = len(human_solution)
         if human_num_solution_steps > 0:
             hint = human_solution[0]
-        if human_num_solution_steps > 1:
-            hint += ", " + human_solution[1]       
-        if human_num_solution_steps > 2:
-            hint += ", " + human_solution[2] 
-        hint += "..."    
+            if human_num_solution_steps > 1:
+                hint += ", " + human_solution[1]       
+                if human_num_solution_steps > 2:
+                    hint += ", " + human_solution[2] 
+            hint += "..."    
+        else:
+            hint = ""
         data["human_hint"] = hint
         data['human_num_solution_steps'] = human_num_solution_steps
 

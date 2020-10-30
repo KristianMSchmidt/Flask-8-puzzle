@@ -1,14 +1,11 @@
 {% extends 'base.html' %}
 {% block title %}8 puzzle{% endblock title%}
 {% block body %}
-
-<script>
-    js_data = JSON.parse('{{ data | tojson | safe}}');
-</script>
+{{data}}
 
 <div class="title-area">
     <h1>8-puzzle</h1>
-    <h4>Solve the puzzle yourself (use arrow keys) or try the automatic solver</h4>
+    <h4>Try the automatic solver or solve the puzzle yourself (use arrow keys)</h4>
     <input type="button" id="new_puzzle_btn" value="New Puzzle">
 </div>
 
@@ -41,9 +38,6 @@
             <input type="radio" class="selector" id="bfs" name="search_type"  value="bfs">
             <label for="dfs" class="radiolabel">Depth-first search</label>
             <input type="radio" class="selector" id="dfs" name="search_type" value="dfs">
-            <script>
-                document.getElementById(js_data["search_type"]).checked = true;
-            </script>
         {% else %}
             <h4>Solution details</h4>
             <p class="h6">Basics:</p>
@@ -80,9 +74,9 @@
         <input type="button" id="help_btn" value="Need help?" >
     </div> 
     {% if data["requested_action"] == "help" %}
-    <div class="vertical-flex-container info">
-        {% include "help.html" %}
-    </div>
+        <div class="vertical-flex-container info">
+            {% include "help.html" %}
+        </div>
     {% endif %} 
 </div>
 
@@ -91,96 +85,27 @@
     <input type="hidden" name="json_data" id="json_data" value = "">
 </form>
 
+<script src="../static/js/eventlisteners.js"></script>
+<script src="../static/js/render_puzzle.js"></script>
+
 <script>
-    function render_puzzle(puzzle, agent){
-        for (let i=0; i < 3; i++) {
-            for (let j=0; j<3; j++){
-                id = agent + i.toString() + j.toString();
-                element = document.getElementById(id);
-                if(puzzle[i][j] == 0){
-                    element.classList.add("zero-tile");
-                    element.innerHTML= "";
-                }
-                else{
-                    element.innerHTML=puzzle[i][j];
-                    element.classList.remove("zero-tile");
-                }
-            }
-         }
-    }
+    // ai GAME states
+    js_data = JSON.parse('{{ data | tojson | safe}}');
+    
+    // always do this: 
     render_puzzle(js_data["ai_puzzle"], "ai")
     render_puzzle(js_data["human_puzzle"], "human")
-    
-    function submit(){
-        document.getElementById("json_data").value = JSON.stringify(js_data)
-        document.getElementById("form").submit();
+    set_eventlisteners(js_data);
+
+    // setup radio button
+    if (!js_data["ai_solution_computed"]){
+        document.getElementById(js_data["search_type"]).checked = true;
     }
-    function set_event_listeners(){
-        document.getElementById("new_puzzle_btn").addEventListener('click', event => {
-            js_data["requested_action"] = "new_puzzle"
-            submit()
-        })
-        function human_move(direction){
-            js_data["direction"] = direction;
-            js_data["requested_action"] = "human_move"
-            submit()
-        }
-        document.addEventListener('keydown', event => {
-            switch (event.keyCode){
-                case 37: human_move("l");
-                break;
-
-                case 39: human_move("r");
-                break;
-
-                case 38: human_move("u"); 
-                break;
-
-                case 40: human_move("d");
-                break;
-            }
-        }); 
-    
-        document.getElementById("solve_btn").addEventListener('click', event => {
-                document.getElementById("ai_status").innerHTML = "Searching..."
-                search_type = document.querySelector('input[name="search_type"]:checked').value;
-                js_data["search_type"] = search_type;
-                js_data["requested_action"] = "solve_ai_puzzle"
-                submit()
-            });
-
-        document.getElementById("reset_btn").addEventListener('click', event => {
-                js_data["requested_action"] = "reset_ai"
-                submit()                
-            })
-
-        document.getElementById("help_btn").addEventListener('click', event => {
-            js_data["requested_action"] = "help"
-            submit()
-        })
-    }      
-    set_event_listeners();
-
-    function animate_solution() {         //  create a loop function
-        setTimeout(function() {   //  call a 3s setTimeout when the loop is called
-            let puzzle = js_data['animated_solution'][k]
-            render_puzzle(puzzle, "ai")
-            k++;                    //  increment the counter
-            document.getElementById("ai_move_count").innerHTML = `#Moves: ${k}`;
-            if (k < js_data['ai_num_solution_steps']) {           //  if the counter < 10, call the loop function
-                animate_solution();             //  ..  again which will trigger another 
-            } 
-            else{
-                document.getElementById("ai_status").innerHTML = "Solved!"
-
-            }                      //  ..  setTimeout()
-        }, 150);
-    }
-    var k = 0;
 
     if(js_data['requested_action'] == 'solve_ai_puzzle'){
         document.getElementById("solve_btn").style.display = "none";
-        animate_solution()
+        //animate solution
+        show_solution_step(0)
     }
 
     // hide buttons 
@@ -199,7 +124,6 @@
         document.getElementById("ai_status").innerHTML = "Solved!"
          }
         }
-
 </script>
 
 
