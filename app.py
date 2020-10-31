@@ -20,9 +20,11 @@ def index():
     
     if request.method == 'GET':
         action = "new_puzzle"
+        search_type = "ast_alt"
     else: 
         data = json.loads(request.form["json_data"])   #return(json.dumps(data))
         action = data["requested_action"]
+        search_type = data["search_type"]
 
     if action == 'new_puzzle':
         puzzle_number = random_choice(range(len(puzzle_collection)))
@@ -33,8 +35,7 @@ def index():
             "human_puzzle": puzzle,
             "human_move_count": 0,
             "human_puzzle_is_solved": False,
-            "ai_status_mgs": "Not solved yet",
-            "search_type" : "ast_alt",
+            "search_type" : search_type,
             "requested_action" : "new_puzzle",
             "ai_solution_computed": False
             }
@@ -60,16 +61,18 @@ def index():
         data['max_search_depth'] = max_search_depth
         data['ai_solution_string'] = ai_solution_string
         data["ai_solution_computed"] = True
+        
+        # Compute all board positions on the road to solution:
         ai_puzzle_clone = ai_puzzle.clone()
         animated_solution = []
         for direction in data['ai_solution_string']:
             ai_puzzle_clone.update_puzzle(direction)
             animated_solution.append(ai_puzzle_clone.clone()._grid)    
         data['animated_solution'] = animated_solution 
-        data['ai_status_mgs'] = "Showing solution..."
+        data["final_state"] = animated_solution[-1]
 
+        
     elif action == 'reset_ai': 
-        data['ai_status_mgs'] = "Not solved yet"
         data["ai_solution_computed"] = False
     
     elif action == "help":

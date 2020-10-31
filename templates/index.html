@@ -20,35 +20,39 @@
             {% endfor %}
         </div>
         <p id="ai_move_count">#Moves: 0</p> 
-        <p id="ai_status">{{data["ai_status_mgs"]}}</p>
-        <input type="button" id="solve_btn" value="Solve">
-        <input type="button" id="reset_btn" value="Reset">    
+        <p id="ai_status">Not solved yet</p>
+        {% if not data["ai_solution_computed"] %}
+            <input type="button" id="solve_btn" value="Solve">
+        {% else %}
+            <input type="button" id="reset_btn" value="Reset">    
+        {% endif %}
     </div>  
-    <div class="vertical-flex-container info" id="select-algorithm-area">
-        <h4>Search algorithm</h4>
-        <br>
-        <label for="ast_alt" class="radiolabel">A*-search (Manhattan)</label>
-        <input type="radio" class="selector" id="ast_alt" name="search_type"  value="ast_alt">
-        <label for="gbfs class="radiolabel">Gready best-first search</label>
-        <input type="radio" class="selector" id="gbfs" name="search_type"  value="gbfs">
-        <label for="bfs" class="radiolabel">Breadth-first search</label>
-        <input type="radio" class="selector" id="bfs" name="search_type"  value="bfs">
-        <label for="dfs" class="radiolabel">Depth-first search</label>
-        <input type="radio" class="selector" id="dfs" name="search_type" value="dfs">
-    </div>
-    <div class="vertical-flex-container info" id="solution-details-area">
-        <h4>Solution details</h4>
-        <p class="h6">Basics:</p>
-        <p id="solution-method"></p>   
-        <p>#Moves in solution:
-            <a href={{url_for('show_solution_string', ai_solution_string=data['ai_solution_string'])}}>
-            {{data["ai_num_solution_steps"]}}</a>
-        </p> 
-        <p>Running time: {{data["running_time"]}}s</p>
-        <p class="h6">Nerd stuff:</p>
-        <p>Max search depth: {{data["max_search_depth"]}}</p> 
-        <p>Max Ram Usage: {{data["max_ram_usage"]}}MB</p>   
-        <p>#Expanded nodes: {{data["num_expanded_nodes"]}}</p> 
+    <div class="vertical-flex-container info">
+        {% if not data["ai_solution_computed"] %}
+            <h4>Search algorithm</h4>
+            <br>
+            <label for="ast_alt" class="radiolabel">A*-search (Manhattan)</label>
+            <input type="radio" class="selector" id="ast_alt" name="search_type"  value="ast_alt">
+            <label for="gbfs class="radiolabel">Gready best-first search</label>
+            <input type="radio" class="selector" id="gbfs" name="search_type"  value="gbfs">
+            <label for="bfs" class="radiolabel">Breadth-first search</label>
+            <input type="radio" class="selector" id="bfs" name="search_type"  value="bfs">
+            <label for="dfs" class="radiolabel">Depth-first search</label>
+            <input type="radio" class="selector" id="dfs" name="search_type" value="dfs">
+        {% else %}
+            <h4>Solution details</h4>
+            <p class="h6">Basics:</p>
+            <p id="solution-method"></p>   
+            <p>#Moves in solution:
+                <a href={{url_for('show_solution_string', ai_solution_string=data['ai_solution_string'])}}>
+                {{data["ai_num_solution_steps"]}}</a>
+            </p> 
+            <p>Running time: {{data["running_time"]}}s</p>
+            <p class="h6">Nerd stuff:</p>
+            <p>Max search depth: {{data["max_search_depth"]}}</p> 
+            <p>Max Ram Usage: {{data["max_ram_usage"]}}MB</p>   
+            <p>#Expanded nodes: {{data["num_expanded_nodes"]}}</p> 
+        {% endif %}
     </div> 
     <div class="vertical-flex-container game-area" id="human-board">
         <h3>You</h3>
@@ -61,14 +65,19 @@
             {% endfor %}
         </div>
         <p id="human_move_count">#Moves: {{data["human_move_count"]}}</p> 
-        <p id="human_puzzle_status"></p>
+        <p id="human_puzzle_status">
+            {% if data["human_puzzle_is_solved"] %}
+                Solved!
+            {% else %}
+                Not solved yet
+            {% endif %}
+        </p>
         <input type="button" id="help_btn" value="Need help?" >
     </div> 
-    <div class="vertical-flex-container info" id="help-container">
-        {% include "help.html" %}
-    </div>
+    {% if data["requested_action"] == "help" %}
+        {% include 'help.html' %}
+    {% endif %}
 </div>
-
 
 <form method="post" action="{{ url_for('index') }}" id="form">
     <input type="hidden" name="json_data" id="json_data" value = "">
