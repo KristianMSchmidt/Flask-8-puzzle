@@ -5,7 +5,7 @@
 <div class="title-area">
     <h1>8-puzzle</h1>
     <h4>Try the automatic solver or solve the puzzle yourself (use arrow keys)</h4>
-    <input type="button" id="new_puzzle_btn" value="New Puzzle">
+    <input type="button" id="new_puzzle_btn" value="New 8-Puzzle">
 </div>
 
 <div class="horizontal-flex-container">
@@ -88,4 +88,30 @@
 <script src="../static/js/render_puzzle.js"></script>
 <script src= "../static/js/main.js"></script>
 
+<div class="title-area">
+    <h1>15-puzzle</h1>
+    <h4>Try the automatic solver or solve the puzzle yourself (use arrow keys)</h4>
+    <input type="button" id="new_15puzzle_btn" value="New 15-Puzzle">
+</div>
+
+<div class="horizontal-flex-container">
+    <div class="vertical-flex-container game-area">
+        <h3>Computer</h3>
+        <p>Sample #{{data["puzzle_number"]}}</p>
+        <div class="fifteen-board">
+            {% for i in range(4) %}
+                {% for j in range(4) %}
+                    <div id="ai{{i|string}}{{j|string}}"></div>
+                {% endfor %}
+            {% endfor %}
+        </div>
+        <p id="ai_move_count">#Moves: 0</p> 
+        <p id="ai_status">Not solved yet</p>
+        {% if not data["ai_solution_computed"] %}
+            <input type="button" id="solve_btn" value="Solve">
+        {% else %}
+            <input type="button" id="reset_btn" value="Reset">    
+        {% endif %}
+   </div>
+</div>
 {% endblock body %}

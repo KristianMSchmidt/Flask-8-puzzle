@@ -141,6 +141,35 @@ html {
   background-color: white;
 }
 
+.fifteen-board {
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: 1fr 1fr 1fr 1fr;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+  -ms-grid-rows: 1fr 1fr 1fr 1fr;
+      grid-template-rows: 1fr 1fr 1fr 1fr;
+  border-bottom: 1px solid black;
+  border-left: 1px solid black;
+  gap: 0;
+  width: 180px;
+  height: 180px;
+  background-color: #55b4b0;
+  color: #000;
+}
+
+.fifteen-board > div {
+  padding: 20px;
+  text-align: center;
+  border-top: 1px solid black;
+  border-right: 1px solid black;
+  font-size: 1em;
+  font-weight: bold;
+}
+
+.fifteen-board > div.zero-tile {
+  background-color: white;
+}
+
 @media only screen and (max-width: 950px) {
   /*985px) {*/
   .horizontal-flex-container {
