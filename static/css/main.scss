@@ -28,7 +28,8 @@ html {
 .title-area {
   text-align: center;
   padding-left: 0.8em;
-  margin-bottom: 2em;
+  margin-bottom: 1.5em;
+  margin-top: 0.5em;
   input {
     margin-top: 0.5em;
     height: 40px;
@@ -50,6 +51,7 @@ html {
   display: flex;
   flex-direction: row;
   align-items: flex-start;
+  margin-bottom: 0em;
 }
 .vertical-flex-container {
   width: 100%;
@@ -131,8 +133,8 @@ html {
   border-bottom: 1px solid black;
   border-left: 1px solid black;
   gap: 0;
-  width: 180px;
-  height: 180px;
+  width: 250px;
+  height: 250px;
   background-color: $tile-color;
   color: set-text-color($tile-color);
 

@@ -13,7 +13,8 @@ html {
 .title-area {
   text-align: center;
   padding-left: 0.8em;
-  margin-bottom: 2em;
+  margin-bottom: 1.5em;
+  margin-top: 0.5em;
 }
 
 .title-area input {
@@ -46,6 +47,7 @@ html {
   -webkit-box-align: start;
       -ms-flex-align: start;
           align-items: flex-start;
+  margin-bottom: 0em;
 }
 
 .vertical-flex-container {
@@ -151,8 +153,8 @@ html {
   border-bottom: 1px solid black;
   border-left: 1px solid black;
   gap: 0;
-  width: 180px;
-  height: 180px;
+  width: 250px;
+  height: 250px;
   background-color: #55b4b0;
   color: #000;
 }

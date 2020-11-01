@@ -42,15 +42,10 @@ function set_global_eventlisteners(js_data){
     })
 
     document.getElementById("help_btn").addEventListener('click', event => {
-        if(js_data["requested_action"] == "help"){
-            document.getElementById("help-area").style.display = "none";
-            js_data["requested_action"] = ""
-        }
-        else{
-            js_data["requested_action"] = "help";
-            submit();
-        }
-    })
+        document.getElementById("human_puzzle_status").innerHTML = "Generating help...";
+        js_data["requested_action"] = "help";
+        submit();
+        })
 }
 
 function set_eventlisteners_ai_not_solved(){
@@ -70,6 +65,13 @@ function set_eventlisteners_ai_not_solved(){
             
         }        
     }
+}
+function set_eventlisteners_ai_15_not_solved(){
+    document.getElementById("solve_15_btn").addEventListener('click', event => {
+        document.getElementById("ai_15_status").innerHTML = "Searching...";
+        js_data["requested_action"] = "solve_ai_15_puzzle";
+        submit();
+    });   
 }
 
 function set_eventlisteners_ai_solved(){

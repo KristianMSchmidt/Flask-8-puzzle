@@ -1,6 +1,8 @@
 function render_puzzle(puzzle, agent){
-    for (let i=0; i < 3; i++) {
-        for (let j=0; j<3; j++){
+    let num_rows = puzzle.length;
+    let num_columns = puzzle[0].length; 
+    for (let i=0; i < num_rows; i++) {
+        for (let j=0; j < num_columns; j++){
             id = agent + i.toString() + j.toString();
             element = document.getElementById(id);
             if(puzzle[i][j] == 0){

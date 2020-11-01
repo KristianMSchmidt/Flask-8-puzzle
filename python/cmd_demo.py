@@ -34,7 +34,7 @@ def example2():
 
     #Solve using A*-search w. Manhattan heuristics
     #This takes longer time to calculate, but te solution will be shorter (fewer moves)
-    Joes_puzzle.solve_puzzle("ast_naive", print_results=True)
+    Joes_puzzle.solve_puzzle("gbfs", print_results=True)
 
     #Solve using Breadth First Search
     #Joes_puzzle.solve_puzzle("bfs",print_results=True)

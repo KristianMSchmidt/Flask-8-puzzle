@@ -19,32 +19,30 @@ else{
     // Set relevant eventlisteners 
     set_eventlisteners_ai_solved(js_data)
 
-    // Show the used solution method in a nice way
-    method_info = "Solution method: " 
-    if(js_data["search_type"]=="ast_alt"){
-        method_info += "A*"
-    } else if(js_data["search_type"]=="gbfs"){
-        method_info += "GBFS"
-    } else if(js_data["search_type"]=="bfs"){
-        method_info += "BFS"
-    } else if(js_data["search_type"]=="dfs"){
-        method_info += "DFS"
-    }
-    document.getElementById("solution-method").innerHTML = method_info
+    // Show the used solution method 
+    method_info = "Method: " + js_data["search_names"][js_data["search_type"]];
+    document.getElementById("solution-method").innerHTML = method_info;
 
     // If human interrupts the animated solution by asking for help or moving human puzzle
     // make sure the final solved state of the computer puzzle is shown 
     if (js_data["requested_action"] == "human_move" || js_data["requested_action"] == "help"){
-        console.log(js_data["final_state"])
         render_puzzle(js_data["final_state"], "ai")
         document.getElementById("ai_status").innerHTML = "Solved!"
     }
 }
 
-// If human moves are made, scroll to this part of the DOM (relevant for small screens)
-if( js_data["requested_action"] == "human_move"){
-    window.location = "#human-board"
+
+// On small screens: If human moves are made, scroll to this part of the DOM
+let width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
+if(width < 950){
+    if(js_data["requested_action"] == "human_move"){
+        window.location = "#human-board"
+    }
+    if(js_data["requested_action"] == "help"){
+        window.location = "#help-area"
+    }
 }
+
 
 // If solution to computer puzzle has just been computed, show animation: 
 if(js_data['requested_action'] == 'solve_ai_puzzle'){
