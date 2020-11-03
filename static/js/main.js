@@ -3,21 +3,23 @@ render_puzzle(js_data["ai_puzzle"], agent = "ai")
 render_puzzle(js_data["human_puzzle"], agent = "human")
 
 // Set eventlisteners
-set_global_eventlisteners(js_data);
+set_global_eventlisteners();
 
 // If solution to computer puzzle is not computed yet
 if (!js_data["ai_solution_computed"]){  
-    // Set relevant eventlisteners 
-    set_eventlisteners_ai_not_solved(js_data)
- 
+
     // Set the checked radio-button (defaults to A*-search)
     document.getElementById(js_data["search_type"]).checked = true;
+
+    // Set relevant eventlisteners 
+    set_solve_btn_eventlistener()
+    set_radio_button_eventlisteners()
 }
 
 // If solution to computer puzzle has been computed
 else{
     // Set relevant eventlisteners 
-    set_eventlisteners_ai_solved(js_data)
+    set_reset_btn_eventlisteners()
 
     // Show the used solution method 
     method_info = "Method: " + js_data["search_names"][js_data["search_type"]];
@@ -31,6 +33,9 @@ else{
     }
 }
 
+if(js_data["puzzle_type"] == "sample"){
+    set_help_btn_eventlistener()
+}
 
 // On small screens: If human moves are made, scroll to this part of the DOM
 let width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
@@ -42,7 +47,6 @@ if(width < 950){
         window.location = "#help-area"
     }
 }
-
 
 // If solution to computer puzzle has just been computed, show animation: 
 if(js_data['requested_action'] == 'solve_ai_puzzle'){

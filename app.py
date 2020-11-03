@@ -22,12 +22,14 @@ def index():
         action = "new_sample"
         puzzle_dim = 3
         search_type = "ast_alt"
+        puzzle_type = "sample"
    
     else: 
         data = json.loads(request.form["json_data"])   #return(json.dumps(data))
         action = data["requested_action"]
         puzzle_dim = data["puzzle_dim"]
         search_type = data["search_type"]
+        puzzle_type = data["puzzle_type"]
 
     if action == 'new_sample' or action == 'show_solved_puzzle': # new sample btn or change puzzle size
         if action == 'new_sample':
@@ -37,15 +39,15 @@ def index():
                 puzzle_collection = fifteen_puzzles 
             puzzle_number = random_choice(range(len(puzzle_collection)))
             puzzle = Puzzle(puzzle_dim, puzzle_dim, puzzle_collection[puzzle_number])._grid 
-            puzzle_title = "Sample Puzzle #" +str(puzzle_number+1)
+            puzzle_title = "Sample Puzzle #" + str(puzzle_number+1)
             human_puzzle_is_solved = False  #Assuming no samples are in solved state
             ai_puzzle_is_solved = False
         else: 
             if puzzle_dim == 3:
                 puzzle = [[0,1,2],[3,4,5],[6,7,8]]
             else:
-                puzzle = [[0, 1, 2, 3], [4, 5, 6, 7], [8, 9, 10,11], [12,13,14,15]]
-            puzzle_title = "Solved puzzle"
+                puzzle = [[0, 1, 2, 3], [4, 5, 6, 7], [8, 9, 10, 11], [12, 13, 14, 15]]
+            puzzle_title = "Custom puzzle"
             human_puzzle_is_solved = True  #Assuming no samples are in solved state
             ai_puzzle_is_solved =  True
        
@@ -60,6 +62,7 @@ def index():
             "ai_puzzle_is_solved": ai_puzzle_is_solved,
             "ai_solution_computed": False,
             "requested_action": action,
+            "puzzle_type": puzzle_type,
             "search_names": {
                 "ast_alt": "A*-search",
                 "dfs": "Depth-first Search",
@@ -75,7 +78,6 @@ def index():
             data["human_puzzle"] = human_puzzle._grid
             data["human_move_count"] += 1
             data["human_puzzle_is_solved"] = human_puzzle.is_solved()
-            data["puzzle_title"] = "Custom Puzzle"
         except:
             pass   # Move is off grid
 

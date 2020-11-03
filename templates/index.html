@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
 {% block title %}8 puzzle{% endblock title%}
 {% block body %}
-{{data["requested_action"]}}
-{{data["human_puzzle"]}}
+
+{{data["puzzle_type"]}}
 <div class="title-area">
     {% if data["puzzle_dim"] == 3 %}
         <h1>8-puzzle</h1>
@@ -10,8 +10,16 @@
         <h1>15-puzzle</h1>
     {% endif %}
     <h4>Try the automatic solver or solve the puzzle yourself (use arrow keys)</h4>
-    <input type="button" id="new_sample_btn" value="New Sample"><br>
-    <input type="button" id="make_custom_btn" value="Make Custom Puzzle"><br>     <!-- small button::-->
+    <input type="button" id="new_sample_btn" value="New Sample Puzzle">
+    <input type="button" id="make_custom_btn" value="Make Custom Puzzle"><br>   
+    <br>  
+    <a id="change_puzzle_dim_link" href="#">
+        {% if data["puzzle_dim"] == 3 %}
+            Try 15-puzzle?
+        {% else %}
+            Back to 8-puzzle
+        {% endif %}
+    </a>
 </div>
 
 <div class="horizontal-flex-container">
@@ -85,28 +93,15 @@
                 Not solved yet
             {% endif %}
         </p>
-        <input type="button" id="help_btn" value="Need help?" >
-        <input type="button" id="send_to_ai_btn" value="Send to Computer" >
+        {% if data["puzzle_type"] == "sample" %}
+            <input type="button" id="help_btn" value="Need help?">
+        {% endif %}
 
     </div> 
     {% if data["requested_action"] == "help" %}
         {% include 'help.html' %}
     {% endif %}
 </div>
-
-<div class="title-area">
-    <a id="change_puzzle_dim_link" href="#">
-        {% if data["puzzle_dim"] == 3 %}
-            Try 15-puzzle?
-        {% else %}
-            Back to 8-puzzle
-        {% endif %}
-    </a>
-</div>
-
-<form method="post" action="{{ url_for('index') }}" id="form">
-    <input type="hidden" name="json_data" id="json_data" value = "">
-</form>
 
 <script>js_data = JSON.parse('{{ data | tojson | safe}}')</script>  
 <script src="../static/js/eventlisteners.js"></script>

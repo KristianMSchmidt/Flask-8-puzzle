@@ -4,20 +4,19 @@ function submit(){
     document.getElementById("form").submit();
 }
 
-function set_global_eventlisteners(js_data){
-    // Event handlers that should be defined in all game states
+function set_global_eventlisteners(){
+    // Event handlers that should be defined in in all states
+
+    document.getElementById("new_sample_btn").addEventListener('click', event => {
+        js_data["requested_action"] = "new_sample";
+        js_data["puzzle_type"] = "sample"
+        submit();
+    })
 
     document.getElementById("make_custom_btn").addEventListener('click', event => {
         js_data['requested_action'] = "show_solved_puzzle";
+        js_data['puzzle_type'] = "custom";
         submit();
-    })
-    
-    document.getElementById("send_to_ai_btn").addEventListener('click', event => {
-        js_data['ai_puzzle'] = js_data['human_puzzle'];
-        js_data['puzzle_title'] = "Custom Puzzle";
-        document.getElementById("ai_title").innerHTML = "Custom Puzzle";
-        render_puzzle(js_data["ai_puzzle"], agent = "ai")
-
     })
 
     document.getElementById("change_puzzle_dim_link").addEventListener('click', event => {
@@ -59,32 +58,21 @@ function set_global_eventlisteners(js_data){
             break;
         }
     }); 
-
-    document.getElementById("new_sample_btn").addEventListener('click', event => {
-        js_data["requested_action"] = "new_sample";
-        submit();
-    })
-
-    document.getElementById("help_btn").addEventListener('click', event => {
-        if(document.getElementById("help-area")){
-            document.getElementById("help-area").innerHTML = "<h4>Here's a hint</h4><p>Generating help...</p>";
-        } else{
-            document.getElementById("human_status").innerHTML = "Generating help..."
-        }
-
-        js_data["requested_action"] = "help";
-        submit();
-        })
 }
 
-function set_eventlisteners_ai_not_solved(){
-    // These eventlisteners should only be set when ai puzzle is not yet solved
+function set_solve_btn_eventlistener(){
+    // This eventlistener should only be set when ai puzzle is not solved
 
     document.getElementById("solve_btn").addEventListener('click', event => {
             document.getElementById("ai_status").innerHTML = "Searching...";
             js_data["requested_action"] = "solve_ai_puzzle";
             submit();
     });   
+}
+
+function set_radio_button_eventlisteners(){
+    // This eventlistener should only be set when ai puzzle is not solved
+
     search_types = ["ast_alt", "gbfs", "bfs", "dfs"]
     if (!js_data["ai_solution_computed"]){
         for (let i = 0; i < search_types.length; i++) {
@@ -96,10 +84,23 @@ function set_eventlisteners_ai_not_solved(){
     }
 }
 
-function set_eventlisteners_ai_solved(){
-    // These eventlisteners should only be set when ai puzzle is solved
+function set_reset_btn_eventlisteners(){
+    // These eventlistener should only be set when ai puzzle is solved
     document.getElementById("reset_btn").addEventListener('click', event => {
         js_data["requested_action"] = "reset_ai";
         submit();                
     })
+}
+
+function set_help_btn_eventlistener(){
+    // This eventlistener should only be set, when puzzle_type = sample
+    document.getElementById("help_btn").addEventListener('click', event => {
+        if(document.getElementById("help-area")){
+            document.getElementById("help-area").innerHTML = "<h4>Here's a hint</h4><p>Generating help...</p>";
+        } else{
+            document.getElementById("human_status").innerHTML = "Generating help..."
+        }
+        js_data["requested_action"] = "help";
+        submit();
+        })
 }
