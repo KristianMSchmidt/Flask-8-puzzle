@@ -2,7 +2,7 @@
 {% block title %}8 puzzle{% endblock title%}
 {% block body %}
 
-{{data["puzzle_type"]}}
+{{data}}
 <div class="title-area">
     {% if data["puzzle_dim"] == 3 %}
         <h1>8-puzzle</h1>
@@ -102,6 +102,10 @@
         {% include 'help.html' %}
     {% endif %}
 </div>
+
+<form method="post" action="{{ url_for('index') }}" id="form">
+    <input type="hidden" name="json_data" id="json_data" value = "">
+</form>
 
 <script>js_data = JSON.parse('{{ data | tojson | safe}}')</script>  
 <script src="../static/js/eventlisteners.js"></script>

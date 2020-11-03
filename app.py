@@ -81,6 +81,9 @@ def index():
         except:
             pass   # Move is off grid
 
+        if data["puzzle_type"] == "custom":
+            data["ai_puzzle"] = human_puzzle._grid
+
     elif action == 'solve_ai_puzzle':
         ai_puzzle = Puzzle(puzzle_dim, puzzle_dim, data["ai_puzzle"]);    
         ai_solution_string, ai_num_solution_steps, num_expanded_nodes, max_search_depth, running_time, max_ram_usage \
