@@ -7,6 +7,30 @@ function submit(){
 function set_global_eventlisteners(js_data){
     // Event handlers that should be defined in all game states
 
+    document.getElementById("make_custom_btn").addEventListener('click', event => {
+        js_data['requested_action'] = "show_solved_puzzle";
+        submit();
+    })
+    
+    document.getElementById("send_to_ai_btn").addEventListener('click', event => {
+        js_data['ai_puzzle'] = js_data['human_puzzle'];
+        js_data['puzzle_title'] = "Custom Puzzle";
+        document.getElementById("ai_title").innerHTML = "Custom Puzzle";
+        render_puzzle(js_data["ai_puzzle"], agent = "ai")
+
+    })
+
+    document.getElementById("change_puzzle_dim_link").addEventListener('click', event => {
+        // User wants to change size of puzzle
+        if(js_data["puzzle_dim"] == 3){
+            js_data["puzzle_dim"] = 4;
+        } else{
+            js_data["puzzle_dim"] = 3;
+        }
+        js_data['requested_action'] = "new_sample"
+        submit();
+    })
+
     function human_move(direction){
         js_data["direction"] = direction;
         js_data["requested_action"] = "human_move"
@@ -36,13 +60,18 @@ function set_global_eventlisteners(js_data){
         }
     }); 
 
-    document.getElementById("new_puzzle_btn").addEventListener('click', event => {
-        js_data["requested_action"] = "new_puzzle";
+    document.getElementById("new_sample_btn").addEventListener('click', event => {
+        js_data["requested_action"] = "new_sample";
         submit();
     })
 
     document.getElementById("help_btn").addEventListener('click', event => {
-        document.getElementById("human_puzzle_status").innerHTML = "Generating help...";
+        if(document.getElementById("help-area")){
+            document.getElementById("help-area").innerHTML = "<h4>Here's a hint</h4><p>Generating help...</p>";
+        } else{
+            document.getElementById("human_status").innerHTML = "Generating help..."
+        }
+
         js_data["requested_action"] = "help";
         submit();
         })
@@ -65,13 +94,6 @@ function set_eventlisteners_ai_not_solved(){
             
         }        
     }
-}
-function set_eventlisteners_ai_15_not_solved(){
-    document.getElementById("solve_15_btn").addEventListener('click', event => {
-        document.getElementById("ai_15_status").innerHTML = "Searching...";
-        js_data["requested_action"] = "solve_ai_15_puzzle";
-        submit();
-    });   
 }
 
 function set_eventlisteners_ai_solved(){

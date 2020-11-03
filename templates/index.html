@@ -1,26 +1,38 @@
 {% extends 'base.html' %}
 {% block title %}8 puzzle{% endblock title%}
 {% block body %}
-
+{{data["requested_action"]}}
+{{data["human_puzzle"]}}
 <div class="title-area">
-    <h1>8-puzzle</h1>
+    {% if data["puzzle_dim"] == 3 %}
+        <h1>8-puzzle</h1>
+    {% else %}
+        <h1>15-puzzle</h1>
+    {% endif %}
     <h4>Try the automatic solver or solve the puzzle yourself (use arrow keys)</h4>
-    <input type="button" id="new_puzzle_btn" value="New Sample"><br>
+    <input type="button" id="new_sample_btn" value="New Sample"><br>
+    <input type="button" id="make_custom_btn" value="Make Custom Puzzle"><br>     <!-- small button::-->
 </div>
 
 <div class="horizontal-flex-container">
     <div class="vertical-flex-container game-area">
         <h3>Computer</h3>
-        <p>Sample #{{data["puzzle_number"]}}</p>
-        <div class="board">
-            {% for i in range(3) %}
-                {% for j in range(3) %}
+        <p id="ai_title">{{data["puzzle_title"]}}</p>
+        <div class="board dim{{data["puzzle_dim"]}}">
+            {% for i in range(data["puzzle_dim"]) %}
+                {% for j in range(data["puzzle_dim"]) %}
                     <div id="ai{{i|string}}{{j|string}}"></div>
                 {% endfor %}
             {% endfor %}
         </div>
         <p id="ai_move_count">#Moves: 0</p> 
-        <p id="ai_status">Not solved yet</p>
+        <p id="ai_status">
+            {% if data["ai_puzzle_is_solved"] %}
+                Solved!
+            {% else %}
+                Not solved yet
+            {% endif %}
+        </p>
         {% if not data["ai_solution_computed"] %}
             <input type="button" id="solve_btn" value="Solve">
         {% else %}
@@ -57,16 +69,16 @@
     </div> 
     <div class="vertical-flex-container game-area" id="human-board">
         <h3>You</h3>
-        <p>Sample #{{data["puzzle_number"]}}</p>
-        <div class="board">
-            {% for i in range(3) %}
-                {% for j in range(3) %}
+        <p>{{data["puzzle_title"]}}</p>
+        <div class="board dim{{data["puzzle_dim"]}}">
+            {% for i in range(data["puzzle_dim"]) %}
+                {% for j in range(data["puzzle_dim"]) %}
                     <div id="human{{i|string}}{{j|string}}"></div>
                 {% endfor %}
             {% endfor %}
         </div>
         <p id="human_move_count">#Moves: {{data["human_move_count"]}}</p> 
-        <p id="human_puzzle_status">
+        <p id="human_status">
             {% if data["human_puzzle_is_solved"] %}
                 Solved!
             {% else %}
@@ -74,29 +86,31 @@
             {% endif %}
         </p>
         <input type="button" id="help_btn" value="Need help?" >
+        <input type="button" id="send_to_ai_btn" value="Send to Computer" >
+
     </div> 
     {% if data["requested_action"] == "help" %}
         {% include 'help.html' %}
     {% endif %}
 </div>
 
+<div class="title-area">
+    <a id="change_puzzle_dim_link" href="#">
+        {% if data["puzzle_dim"] == 3 %}
+            Try 15-puzzle?
+        {% else %}
+            Back to 8-puzzle
+        {% endif %}
+    </a>
+</div>
+
 <form method="post" action="{{ url_for('index') }}" id="form">
     <input type="hidden" name="json_data" id="json_data" value = "">
 </form>
-
-<div class="title-area">
-    <a id="mylink" href="#">Try 15-puzzle?</a>
-</div>
-<script>
-    document.getElementById("mylink").addEventListener('click', event => {
-        alert("hej")
-    })
-</script>
 
 <script>js_data = JSON.parse('{{ data | tojson | safe}}')</script>  
 <script src="../static/js/eventlisteners.js"></script>
 <script src="../static/js/render_puzzle.js"></script>
 <script src= "../static/js/main.js"></script>
-
 
 {% endblock body %}

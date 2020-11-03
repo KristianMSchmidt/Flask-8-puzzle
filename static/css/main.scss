@@ -103,8 +103,6 @@ html {
 
 .board {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  grid-template-rows: 1fr 1fr 1fr;
   border-bottom: 1px solid black;
   border-left: 1px solid black;
   gap: 0;
@@ -124,32 +122,19 @@ html {
       background-color: $zero-tile-color;
     }
   }
-}
+  &.dim3 {
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+  }
 
-.fifteen-board {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-  grid-template-rows: 1fr 1fr 1fr 1fr;
-  border-bottom: 1px solid black;
-  border-left: 1px solid black;
-  gap: 0;
-  width: 250px;
-  height: 250px;
-  background-color: $tile-color;
-  color: set-text-color($tile-color);
-
-  > div {
-    padding: 20px;
-    text-align: center;
-    border-top: 1px solid black;
-    border-right: 1px solid black;
-    font-size: 1em;
-    font-weight: bold;
-    &.zero-tile {
-      background-color: $zero-tile-color;
-    }
+  &.dim4 {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr;
+    width: 250px;
+    height: 250px;
   }
 }
+
 @media only screen and (max-width: 950px) {
   /*985px) {*/
   .horizontal-flex-container {

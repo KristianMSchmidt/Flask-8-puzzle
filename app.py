@@ -11,37 +11,55 @@ import timeit, json
 from random import choice as random_choice
 from python.Puzzle import Puzzle
 from python.utils import convert_solution_string
-from python.puzzle_collection import puzzle_collection
+from python.puzzle_collection import eight_puzzles, fifteen_puzzles
 
 app = Flask('__name__')
 
 @app.route("/", methods=['GET', 'POST'])
 def index():
-    
+
     if request.method == 'GET':
-        action = "new_puzzle"
+        action = "new_sample"
+        puzzle_dim = 3
         search_type = "ast_alt"
+   
     else: 
         data = json.loads(request.form["json_data"])   #return(json.dumps(data))
         action = data["requested_action"]
+        puzzle_dim = data["puzzle_dim"]
         search_type = data["search_type"]
 
-    if action == 'new_puzzle':
-        puzzle_number = random_choice(range(len(puzzle_collection)))
-        puzzle = Puzzle(3,3,puzzle_collection[puzzle_number])._grid 
+    if action == 'new_sample' or action == 'show_solved_puzzle': # new sample btn or change puzzle size
+        if action == 'new_sample':
+            if puzzle_dim == 3:
+                puzzle_collection = eight_puzzles
+            else:
+                puzzle_collection = fifteen_puzzles 
+            puzzle_number = random_choice(range(len(puzzle_collection)))
+            puzzle = Puzzle(puzzle_dim, puzzle_dim, puzzle_collection[puzzle_number])._grid 
+            puzzle_title = "Sample Puzzle #" +str(puzzle_number+1)
+            human_puzzle_is_solved = False  #Assuming no samples are in solved state
+            ai_puzzle_is_solved = False
+        else: 
+            if puzzle_dim == 3:
+                puzzle = [[0,1,2],[3,4,5],[6,7,8]]
+            else:
+                puzzle = [[0, 1, 2, 3], [4, 5, 6, 7], [8, 9, 10,11], [12,13,14,15]]
+            puzzle_title = "Solved puzzle"
+            human_puzzle_is_solved = True  #Assuming no samples are in solved state
+            ai_puzzle_is_solved =  True
+       
         data = {
-            "puzzle_number":puzzle_number + 1,
+            "puzzle_title": puzzle_title,
             "ai_puzzle": puzzle,
             "human_puzzle": puzzle,
-            "human_move_count": 0,
-            "human_puzzle_is_solved": False,
+            "puzzle_dim": puzzle_dim,
             "search_type" : search_type,
-            "requested_action" : "new_puzzle",
+            "human_move_count": 0,
+            "human_puzzle_is_solved": human_puzzle_is_solved,
+            "ai_puzzle_is_solved": ai_puzzle_is_solved,
             "ai_solution_computed": False,
-            "15_puzzle": [[1, 2, 6, 3],
-                          [4, 5, 0, 7],
-                          [8, 9, 10, 11],
-                          [12, 13, 14, 15]],
+            "requested_action": action,
             "search_names": {
                 "ast_alt": "A*-search",
                 "dfs": "Depth-first Search",
@@ -49,19 +67,20 @@ def index():
                 "gbfs": "Gready best-First Search "
             }
         }
-
+        
     elif action == 'human_move':
-        human_puzzle = Puzzle(3,3, data["human_puzzle"])
+        human_puzzle = Puzzle(puzzle_dim, puzzle_dim, data["human_puzzle"]);    
         try:
             human_puzzle.update_puzzle(data["direction"])
             data["human_puzzle"] = human_puzzle._grid
             data["human_move_count"] += 1
             data["human_puzzle_is_solved"] = human_puzzle.is_solved()
+            data["puzzle_title"] = "Custom Puzzle"
         except:
-            pass
+            pass   # Move is off grid
 
     elif action == 'solve_ai_puzzle':
-        ai_puzzle = Puzzle(3,3, data["ai_puzzle"])
+        ai_puzzle = Puzzle(puzzle_dim, puzzle_dim, data["ai_puzzle"]);    
         ai_solution_string, ai_num_solution_steps, num_expanded_nodes, max_search_depth, running_time, max_ram_usage \
                 = ai_puzzle.solve_puzzle(data['search_type'])
         data['running_time'] = round(running_time, 5)
@@ -82,11 +101,11 @@ def index():
         data["final_state"] = animated_solution[-1]
 
         
-    elif action == 'reset_ai': 
+    elif action == 'reset_sample_ai': 
         data["ai_solution_computed"] = False
     
     elif action == "help":
-        human_puzzle = Puzzle(3,3, data["human_puzzle"])
+        human_puzzle = Puzzle(puzzle_dim, puzzle_dim, data["human_puzzle"])
         human_solution, human_num_solution_steps, _, _, _, _ = human_puzzle.solve_puzzle(data["search_type"])
         human_solution = convert_solution_string(human_solution)
         human_num_solution_steps = len(human_solution)
@@ -101,28 +120,7 @@ def index():
             hint = ""
         data["human_hint"] = hint
         data['human_num_solution_steps'] = human_num_solution_steps
-
-    elif action == "solve_ai_15_puzzle":
-        ai_puzzle = Puzzle(4,4, data["15_puzzle"])
-        ai_solution_string, ai_num_solution_steps, num_expanded_nodes, max_search_depth, running_time, max_ram_usage \
-                = ai_puzzle.solve_puzzle(data['search_type'])
-        data['running_time_15'] = round(running_time, 5)
-        data['max_ram_usage_15'] = round(max_ram_usage, 2)  #number is in megabytes
-        data['ai_num_solution_steps_15'] = len(ai_solution_string)
-        data['num_expanded_nodes_15'] = num_expanded_nodes
-        data['max_search_depth_15'] = max_search_depth
-        data['ai_15_solution_string'] = ai_solution_string
-        data["ai_15_solution_computed"] = True
-        
-        # Compute all board positions on the road to solution:
-        ai_puzzle_clone = ai_puzzle.clone()
-        animated_solution = []
-        for direction in ai_solution_string:
-            ai_puzzle_clone.update_puzzle(direction)
-            animated_solution.append(ai_puzzle_clone.clone()._grid)    
-        data['animated_solution_15'] = animated_solution 
-        data["final_state_15"] = animated_solution[-1]
-
+       
     return render_template("index.html", data = data)
 
 @app.route('/<ai_solution_string>')

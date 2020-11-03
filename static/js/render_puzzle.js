@@ -1,8 +1,7 @@
 function render_puzzle(puzzle, agent){
-    let num_rows = puzzle.length;
-    let num_columns = puzzle[0].length; 
-    for (let i=0; i < num_rows; i++) {
-        for (let j=0; j < num_columns; j++){
+    let dim = js_data["puzzle_dim"]
+    for (let i=0; i < dim; i++) {
+        for (let j=0; j < dim; j++){
             id = agent + i.toString() + j.toString();
             element = document.getElementById(id);
             if(puzzle[i][j] == 0){
@@ -20,10 +19,10 @@ function render_puzzle(puzzle, agent){
 function show_solution_step(move_num) {  
     /* shows this animated computer solution */   
     
-    if(js_data['ai_num_solution_steps'] < 100){
+    if(js_data['ai_num_solution_steps'] < 1000){
         var time_delay = 250;
     } else{
-        var time_delay = 2;
+        var time_delay = 25;
     }
     
     setTimeout(function() {   //  
