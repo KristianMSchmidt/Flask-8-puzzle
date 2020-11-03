@@ -39,30 +39,29 @@ def index():
                 puzzle_collection = fifteen_puzzles 
             puzzle_number = random_choice(range(len(puzzle_collection)))
             puzzle = Puzzle(puzzle_dim, puzzle_dim, puzzle_collection[puzzle_number])._grid 
-            puzzle_title = "Sample Puzzle #" + str(puzzle_number+1)
-            human_puzzle_is_solved = False  #Assuming no samples are in solved state
-            ai_puzzle_is_solved = False
+            puzzle_title = "Sample #" + str(puzzle_number+1)
+            puzzle_is_solved = False
         else: 
             if puzzle_dim == 3:
                 puzzle = [[0,1,2],[3,4,5],[6,7,8]]
             else:
                 puzzle = [[0, 1, 2, 3], [4, 5, 6, 7], [8, 9, 10, 11], [12, 13, 14, 15]]
             puzzle_title = "Custom puzzle"
-            human_puzzle_is_solved = True  #Assuming no samples are in solved state
-            ai_puzzle_is_solved =  True
+            puzzle_is_solved =  True
        
         data = {
             "puzzle_title": puzzle_title,
-            "ai_puzzle": puzzle,
-            "human_puzzle": puzzle,
+            "puzzle": puzzle,
+            "original_puzzle": puzzle,
             "puzzle_dim": puzzle_dim,
             "search_type" : search_type,
-            "human_move_count": 0,
-            "human_puzzle_is_solved": human_puzzle_is_solved,
-            "ai_puzzle_is_solved": ai_puzzle_is_solved,
-            "ai_solution_computed": False,
+            "puzzle_is_solved": puzzle_is_solved,
+            "solution_computed": False,
             "requested_action": action,
             "puzzle_type": puzzle_type,
+            "move_count": 0,
+            "solve_or_reset_btn_value": "Solve",
+            "show_solution_details": False,
             "search_names": {
                 "ast_alt": "A*-search",
                 "dfs": "Depth-first Search",
@@ -72,65 +71,59 @@ def index():
         }
         
     elif action == 'human_move':
-        human_puzzle = Puzzle(puzzle_dim, puzzle_dim, data["human_puzzle"]);    
+        puzzle = Puzzle(puzzle_dim, puzzle_dim, data["puzzle"]);    
         try:
-            human_puzzle.update_puzzle(data["direction"])
-            data["human_puzzle"] = human_puzzle._grid
-            data["human_move_count"] += 1
-            data["human_puzzle_is_solved"] = human_puzzle.is_solved()
+            puzzle.update_puzzle(data["direction"])
+            data["puzzle"] = puzzle._grid
+            data["move_count"] += 1
+            data["puzzle_is_solved"] = puzzle.is_solved()
+            if data["puzzle_type"] == "sample":
+                data["solve_or_reset_btn_value"] = "Reset Sample"
+            else:
+                data["solve_or_reset_btn_value"] = "Solve"
+            data["show_solution_details"] = False
         except:
             pass   # Move is off grid
 
         if data["puzzle_type"] == "custom":
-            data["ai_puzzle"] = human_puzzle._grid
+            data["puzzle"] = puzzle._grid
 
-    elif action == 'solve_ai_puzzle':
-        ai_puzzle = Puzzle(puzzle_dim, puzzle_dim, data["ai_puzzle"]);    
-        ai_solution_string, ai_num_solution_steps, num_expanded_nodes, max_search_depth, running_time, max_ram_usage \
-                = ai_puzzle.solve_puzzle(data['search_type'])
+    elif action == 'solve_puzzle':
+        puzzle = Puzzle(puzzle_dim, puzzle_dim, data["puzzle"]);    
+        solution_string, num_solution_steps, num_expanded_nodes, max_search_depth, running_time, max_ram_usage \
+                = puzzle.solve_puzzle(data['search_type'])
         data['running_time'] = round(running_time, 5)
         data['max_ram_usage'] = round(max_ram_usage, 2)  #number is in megabytes
-        data['ai_num_solution_steps'] = len(ai_solution_string)
+        data['num_solution_steps'] = len(solution_string)
         data['num_expanded_nodes'] = num_expanded_nodes
         data['max_search_depth'] = max_search_depth
-        data['ai_solution_string'] = ai_solution_string
-        data["ai_solution_computed"] = True
+        data['solution_string'] = solution_string
+        data["solution_computed"] = True
+        data["show_solution_details"] =  True
+        data["solve_or_reset_btn_value"] = "Reset"
         
         # Compute all board positions on the road to solution:
-        ai_puzzle_clone = ai_puzzle.clone()
+        puzzle_clone = puzzle.clone()
         animated_solution = []
-        for direction in ai_solution_string:
-            ai_puzzle_clone.update_puzzle(direction)
-            animated_solution.append(ai_puzzle_clone.clone()._grid)    
+        for direction in solution_string:
+            puzzle_clone.update_puzzle(direction)
+            animated_solution.append(puzzle_clone.clone()._grid)    
         data['animated_solution'] = animated_solution 
         data["final_state"] = animated_solution[-1]
 
         
-    elif action == 'reset_sample_ai': 
-        data["ai_solution_computed"] = False
-    
-    elif action == "help":
-        human_puzzle = Puzzle(puzzle_dim, puzzle_dim, data["human_puzzle"])
-        human_solution, human_num_solution_steps, _, _, _, _ = human_puzzle.solve_puzzle(data["search_type"])
-        human_solution = convert_solution_string(human_solution)
-        human_num_solution_steps = len(human_solution)
-        if human_num_solution_steps > 0:
-            hint = human_solution[0]
-            if human_num_solution_steps > 1:
-                hint += ", " + human_solution[1]       
-                if human_num_solution_steps > 2:
-                    hint += ", " + human_solution[2] 
-            hint += "..."    
-        else:
-            hint = ""
-        data["human_hint"] = hint
-        data['human_num_solution_steps'] = human_num_solution_steps
-       
+    elif action == 'reset': 
+        data["solution_computed"] = False
+        data["move_count"] = 0
+        data["solve_or_reset_btn_value"] = "Solve"
+        data["show_solution_details"] = False
+        data["puzzle"] = data["original_puzzle"]
+
     return render_template("index.html", data = data)
 
-@app.route('/<ai_solution_string>')
-def show_solution_string(ai_solution_string):
-    return str(convert_solution_string(ai_solution_string))
+@app.route('/<solution_string>')
+def show_solution_string(solution_string):
+    return str(convert_solution_string(solution_string))
 
 if __name__ == "__main__":
     app.run(debug=True)

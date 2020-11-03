@@ -36,6 +36,25 @@ function set_global_eventlisteners(){
         submit()
     }
 
+    document.getElementById("solve_reset_btn").addEventListener('click', event => {
+        if(js_data["solve_or_reset_btn_value"] == "Solve"){
+            document.getElementById("status").innerHTML = "Searching...";
+            js_data["requested_action"] = "solve_puzzle";
+        } else{
+            js_data["requested_action"] = "reset";
+        }
+        submit();                
+        
+    })
+    search_types = ["ast_alt", "gbfs", "bfs", "dfs"]
+    for (let i = 0; i < search_types.length; i++) {
+        document.getElementById(search_types[i]).addEventListener('change', event => {
+            js_data["search_type"] = search_types[i];
+        })
+    }
+            
+        
+
     //Disable default window scrolling on arrow-keys
     window.addEventListener("keydown", function(e) {
         if([37, 38, 39, 40].indexOf(e.keyCode) > -1) {
@@ -58,49 +77,4 @@ function set_global_eventlisteners(){
             break;
         }
     }); 
-}
-
-function set_solve_btn_eventlistener(){
-    // This eventlistener should only be set when ai puzzle is not solved
-
-    document.getElementById("solve_btn").addEventListener('click', event => {
-            document.getElementById("ai_status").innerHTML = "Searching...";
-            js_data["requested_action"] = "solve_ai_puzzle";
-            submit();
-    });   
-}
-
-function set_radio_button_eventlisteners(){
-    // This eventlistener should only be set when ai puzzle is not solved
-
-    search_types = ["ast_alt", "gbfs", "bfs", "dfs"]
-    if (!js_data["ai_solution_computed"]){
-        for (let i = 0; i < search_types.length; i++) {
-            document.getElementById(search_types[i]).addEventListener('change', event => {
-                js_data["search_type"] = search_types[i];
-            })
-            
-        }        
-    }
-}
-
-function set_reset_btn_eventlisteners(){
-    // These eventlistener should only be set when ai puzzle is solved
-    document.getElementById("reset_btn").addEventListener('click', event => {
-        js_data["requested_action"] = "reset_ai";
-        submit();                
-    })
-}
-
-function set_help_btn_eventlistener(){
-    // This eventlistener should only be set, when puzzle_type = sample
-    document.getElementById("help_btn").addEventListener('click', event => {
-        if(document.getElementById("help-area")){
-            document.getElementById("help-area").innerHTML = "<h4>Here's a hint</h4><p>Generating help...</p>";
-        } else{
-            document.getElementById("human_status").innerHTML = "Generating help..."
-        }
-        js_data["requested_action"] = "help";
-        submit();
-        })
 }
