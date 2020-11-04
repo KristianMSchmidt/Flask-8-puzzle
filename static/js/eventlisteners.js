@@ -23,8 +23,10 @@ function set_global_eventlisteners(){
         // User wants to change size of puzzle
         if(js_data["puzzle_dim"] == 3){
             js_data["puzzle_dim"] = 4;
+            js_data["search_type"] = "gbfs";            
         } else{
             js_data["puzzle_dim"] = 3;
+            js_data["search_type"] = "ast_alt";            
         }
         js_data['requested_action'] = "new_sample"
         submit();
@@ -38,7 +40,11 @@ function set_global_eventlisteners(){
 
     document.getElementById("solve_reset_btn").addEventListener('click', event => {
         if(js_data["solve_or_reset_btn_value"] == "Solve"){
+            if (js_data["puzzle_dim"] == 4 && js_data["search_type"]=="ast_alt"){
+                alert("It might take several minutes to solve complicated 15-puzzles with A*-seach. However, if you have patience, you might find a solution with fewer moves than the one found with Gready best-first search")
+            }      
             document.getElementById("status").innerHTML = "Searching...";
+            document.getElementById("solve_reset_btn").disabled = true;
             js_data["requested_action"] = "solve_puzzle";
         } else{
             js_data["requested_action"] = "reset";
@@ -46,10 +52,10 @@ function set_global_eventlisteners(){
         submit();                
         
     })
-    search_types = ["ast_alt", "gbfs", "bfs", "dfs"]
-    for (let i = 0; i < search_types.length; i++) {
-        document.getElementById(search_types[i]).addEventListener('change', event => {
-            js_data["search_type"] = search_types[i];
+
+    for (let i = 0; i < js_data["all_search_types"].length; i++) {
+        document.getElementById(js_data["all_search_types"][i]).addEventListener('change', event => {
+            js_data["search_type"] = js_data["all_search_types"][i];
         })
     }
             

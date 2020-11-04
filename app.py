@@ -48,7 +48,13 @@ def index():
                 puzzle = [[0, 1, 2, 3], [4, 5, 6, 7], [8, 9, 10, 11], [12, 13, 14, 15]]
             puzzle_title = "Custom puzzle"
             puzzle_is_solved =  True
-       
+    
+        if puzzle_dim == 3:
+            all_search_types = ["ast_alt", "gbfs", "bfs", "dfs"]
+ 
+        elif puzzle_dim == 4:
+            all_search_types = ["ast_alt", "gbfs"]        
+
         data = {
             "puzzle_title": puzzle_title,
             "puzzle": puzzle,
@@ -62,12 +68,12 @@ def index():
             "move_count": 0,
             "solve_or_reset_btn_value": "Solve",
             "show_solution_details": False,
-            "search_names": {
-                "ast_alt": "A*-search",
+            "all_search_types": all_search_types,
+            "search_names":
+                {"ast_alt": "A*-search",
+                "gbfs": "Gready best-first Search ",
                 "dfs": "Depth-first Search",
-                "bfs": "Breath-first Search",
-                "gbfs": "Gready best-First Search "
-            }
+                "bfs": "Breath-first Search"}
         }
         
     elif action == 'human_move':

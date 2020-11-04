@@ -19,14 +19,16 @@ function render_puzzle(puzzle){
 function show_solution_step(move_num) {  
     /* shows this animated computer solution */   
     
-    var time_delay = 250;
+    var time_delay = 200;
     
     setTimeout(function() {   //  
         let puzzle = js_data['animated_solution'][move_num]
         render_puzzle(puzzle)
-        move_num ++;                    
+        move_num ++;
+        time_delay = time_delay/(1+0.02*move_num)
+        console.log(time_delay)
         document.getElementById("move_count").innerHTML = `#Moves: ${move_num}`;
-        if (move_num < js_data['num_solution_steps']) {          
+        if (move_num < js_data['num_solution_steps']) {         
             show_solution_step(move_num);              
         } 
         else{

@@ -1,7 +1,7 @@
 // Render puzzles 
 render_puzzle(js_data["puzzle"])
 
-// 
+// Disable solve btn if puzzle is solved
 if(js_data["puzzle_is_solved"]){
     document.getElementById("solve_reset_btn").disabled = true;
 }
@@ -11,8 +11,9 @@ set_global_eventlisteners();
 // Set the checked radio-button (defaults to A*-search)
 document.getElementById(js_data["search_type"]).checked = true;
 
+// Show solution method in a nice readable way
 if(js_data["show_solution_details"]){
-    method_info = "Method: " + js_data["search_names"][js_data["search_type"]];
+    method_info = js_data["search_names"][js_data["search_type"]];
     document.getElementById("solution-method").innerHTML = method_info;
 }
 

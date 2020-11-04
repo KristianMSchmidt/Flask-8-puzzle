@@ -8,7 +8,7 @@
     {% else %}
         <h1>15-puzzle</h1>
     {% endif %}
-    <h4>Try the automatic solver or solve the puzzle yourself (use arrow keys)</h4>
+    <h4>Try the automatic solver or solve the puzzle yourself</h4>
     <input type="button" id="new_sample_btn" value="New Sample">
     <input type="button" id="make_custom_btn" value="Custom Puzzle"><br>   
     <br>  
@@ -27,16 +27,12 @@
 <div class="horizontal-flex-container">
 
     <div class="vertical-flex-container info">
-        <h4>Select solution algorithm</h4>
-        <br>
-        <label for="ast_alt" class="radiolabel">A*-search (Manhattan)</label>
-        <input type="radio" class="selector" id="ast_alt" name="search_type"  value="ast_alt">
-        <label for="gbfs class="radiolabel">Gready best-first search</label>
-        <input type="radio" class="selector" id="gbfs" name="search_type"  value="gbfs">
-        <label for="bfs" class="radiolabel">Breadth-first search</label>
-        <input type="radio" class="selector" id="bfs" name="search_type"  value="bfs">
-        <label for="dfs" class="radiolabel">Depth-first search</label>
-        <input type="radio" class="selector" id="dfs" name="search_type" value="dfs">
+        <h4>Solution algorithm</h4>
+        <br>        
+        {% for search_type in data["all_search_types"] %}
+            <label for="{{search_type}}" class="radiolabel">{{data["search_names"][search_type]}}</label>
+            <input type="radio" class="selector" id="{{search_type}}" name="search_type" value="{{search_type}}">
+        {% endfor %}        
     </div>
     <div class="vertical-flex-container game-area">
         <h3 id="title">{{data["puzzle_title"]}}</h3>
@@ -85,13 +81,14 @@
             <p> [6, 7, 8] </p>
             <br>
             <p> Or try the automatic solver</p>
-            <p> with your prefered algorithm</p>
+            <p> with your prefered algorithm.</p>
         {% else %}
             <p>Create a puzzle yourself by</p>
-            <p>using arrow keys.</p>
+            <p>using arrow keys to mess up.</p>
+            <p>the solved puzzle.</p>
             <br>
             <p>Solve it with your</p>
-            <p>with your prefered algorithm</p>
+            <p>prefered algorithm.</p>
         {% endif %}
     </div>
     {% endif %}
