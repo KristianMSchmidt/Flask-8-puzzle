@@ -18,6 +18,7 @@ html {
 }
 
 .title-area input {
+  margin-bottom: 0.5em;
   margin-top: 0.5em;
   height: 40px;
   width: 180px;

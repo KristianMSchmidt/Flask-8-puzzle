@@ -1,4 +1,5 @@
 function render_puzzle(puzzle){
+    //function that shows puzzle number on board
     let dim = js_data["puzzle_dim"]
     for (let i=0; i < dim; i++) {
         for (let j=0; j < dim; j++){
@@ -15,21 +16,19 @@ function render_puzzle(puzzle){
         }
      }
 }
-
-function show_solution_step(move_num) {  
+ 
+function show_solution_step(move_num, time_delay) {  
     /* shows this animated computer solution */   
-    
-    var time_delay = 200;
     
     setTimeout(function() {   //  
         let puzzle = js_data['animated_solution'][move_num]
         render_puzzle(puzzle)
         move_num ++;
-        time_delay = time_delay/(1+0.02*move_num)
+        time_delay = time_delay*0.995;
         console.log(time_delay)
         document.getElementById("move_count").innerHTML = `#Moves: ${move_num}`;
         if (move_num < js_data['num_solution_steps']) {         
-            show_solution_step(move_num);              
+            show_solution_step(move_num, time_delay);              
         } 
         else{
             document.getElementById("status").innerHTML = "Solved!"

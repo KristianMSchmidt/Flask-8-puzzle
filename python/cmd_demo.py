@@ -19,7 +19,7 @@ def example_1():
 #Example 2: Joe Warrens 4x4-puzzle. 
 def example2():
     """
-    This is a difficuelt puzzle and the choice of search algorithm now really matterns. 
+    This is a difficult puzzle and the choice of search algorithm now really matterns. 
     It's prof Joe Warrens challenge puzzle of size 4x4. 
     Optimal solution is about 80 moves.
     """    
@@ -34,8 +34,6 @@ def example2():
 
     #Solve using A*-search w. Manhattan heuristics
     #This takes longer time to calculate, but te solution will be shorter (fewer moves)
-    Joes_puzzle.solve_puzzle("gbfs", print_results=True)
+    Joes_puzzle.solve_puzzle("ast_alt", print_results=True)
 
-    #Solve using Breadth First Search
-    #Joes_puzzle.solve_puzzle("bfs",print_results=True)
 example2()

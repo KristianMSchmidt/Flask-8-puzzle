@@ -1,11 +1,12 @@
-// Render puzzles 
+// Render puzzle
 render_puzzle(js_data["puzzle"])
 
 // Disable solve btn if puzzle is solved
 if(js_data["puzzle_is_solved"]){
     document.getElementById("solve_reset_btn").disabled = true;
 }
-// Set eventlisteners
+
+// Set global eventlisteners
 set_global_eventlisteners();
 
 // Set the checked radio-button (defaults to A*-search)
@@ -31,6 +32,6 @@ if(width < 950){
 // If solution to computer puzzle has just been computed, show animation: 
 if(js_data['requested_action'] == 'solve_puzzle'){
     document.getElementById("status").innerHTML = "Showing solution..."
-    show_solution_step(0)
+    show_solution_step(move_num = 0, time_delay=200 )
     js_data["puzzle"]=js_data["original_puzzle"]
 }

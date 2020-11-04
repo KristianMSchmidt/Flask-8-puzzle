@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block title %}8 puzzle{% endblock title%}
 {% block body %}
-
+{{data["puzzle"]}}
 <div class="title-area">
     {% if data["puzzle_dim"] == 3 %}
         <h1>8-puzzle</h1>
@@ -10,22 +10,18 @@
     {% endif %}
     <h4>Try the automatic solver or solve the puzzle yourself</h4>
     <input type="button" id="new_sample_btn" value="New Sample">
-    <input type="button" id="make_custom_btn" value="Custom Puzzle"><br>   
-    <br>  
+    <input type="button" id="make_custom_btn" value="Custom Puzzle">
+    <br>
     <a id="change_puzzle_dim_link" href="#">
         {% if data["puzzle_dim"] == 3 %}
             Try 15-puzzle?
         {% else %}
             Back to 8-puzzle
         {% endif %}
-    <br>
-    <br>
-    <br>
     </a>
 </div>
 
 <div class="horizontal-flex-container">
-
     <div class="vertical-flex-container info">
         <h4>Solution algorithm</h4>
         <br>        
@@ -84,8 +80,8 @@
             <p> with your prefered algorithm.</p>
         {% else %}
             <p>Create a puzzle yourself by</p>
-            <p>using arrow keys to mess up.</p>
-            <p>the solved puzzle.</p>
+            <p>messing up the solved puzzle</p>
+            <p>(use arrow keys).</p>
             <br>
             <p>Solve it with your</p>
             <p>prefered algorithm.</p>
