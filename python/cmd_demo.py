@@ -19,8 +19,7 @@ def example_1():
 #Example 2: Joe Warrens 4x4-puzzle. 
 def example2():
     """
-    This is a difficult puzzle and the choice of search algorithm now really matterns. 
-    It's prof Joe Warrens challenge puzzle of size 4x4. 
+    This is a difficult puzzle and the choice of search algorithm now really matters. 
     Optimal solution is about 80 moves.
     """    
     Joes_puzzle=Puzzle(4, 4, [[15, 11, 8, 12], \

@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block title %}8 puzzle{% endblock title%}
 {% block body %}
-{{data["puzzle"]}}
+
 <div class="title-area">
     {% if data["puzzle_dim"] == 3 %}
         <h1>8-puzzle</h1>
@@ -77,14 +77,14 @@
             <p> [6, 7, 8] </p>
             <br>
             <p> Or try the automatic solver</p>
-            <p> with your prefered algorithm.</p>
+            <p> with your preferred algorithm.</p>
         {% else %}
             <p>Create a puzzle yourself by</p>
             <p>messing up the solved puzzle</p>
             <p>(use arrow keys).</p>
             <br>
             <p>Solve it with your</p>
-            <p>prefered algorithm.</p>
+            <p>preferred algorithm.</p>
         {% endif %}
     </div>
     {% endif %}
