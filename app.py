@@ -88,6 +88,8 @@ def index():
             else:
                 data["solve_or_reset_btn_value"] = "Solve"
             data["show_solution_details"] = False
+            if data["puzzle_type"] == "custom":
+                data["original_puzzle"] = data["puzzle"]
         except:
             pass   # Move is off grid
 
@@ -120,10 +122,11 @@ def index():
         
     elif action == 'reset': 
         data["solution_computed"] = False
-        data["move_count"] = 0
         data["solve_or_reset_btn_value"] = "Solve"
         data["show_solution_details"] = False
         data["puzzle"] = data["original_puzzle"]
+        if data["puzzle_type"] == "sample":
+            data["move_count"] = 0         
 
     return render_template("index.html", data = data)
 

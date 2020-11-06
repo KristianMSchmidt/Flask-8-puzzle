@@ -8,17 +8,12 @@
     {% else %}
         <h1>15-puzzle</h1>
     {% endif %}
-    <h4>Try the automatic solver or solve the puzzle yourself</h4>
-    <input type="button" id="new_sample_btn" value="New Sample">
-    <input type="button" id="make_custom_btn" value="Custom Puzzle">
+    {% if data["puzzle_type"] == "sample" %}
+        <h4>Try the automatic solver or solve the puzzle yourself</h4>
+    {% else %}
+        <h4>Create a puzzle to solve with the automatic solver</h4>
+    {% endif %}
     <br>
-    <a id="change_puzzle_dim_link" href="#">
-        {% if data["puzzle_dim"] == 3 %}
-            Try 15-puzzle?
-        {% else %}
-            Back to 8-puzzle
-        {% endif %}
-    </a>
 </div>
 
 <div class="horizontal-flex-container">
@@ -32,7 +27,6 @@
     </div>
     <div class="vertical-flex-container game-area">
         <h3 id="title">{{data["puzzle_title"]}}</h3>
-        <p>&nbsp;</p>
         <div class="board dim{{data["puzzle_dim"]}}" id="board">
             {% for i in range(data["puzzle_dim"]) %}
                 {% for j in range(data["puzzle_dim"]) %}
@@ -49,6 +43,9 @@
             {% endif %}
         </p>
         <input type="button" id="solve_reset_btn" value="{{data["solve_or_reset_btn_value"]}}">
+        <input type="button" id="new_sample_btn" value="New Sample">
+        <input type="button" id="make_custom_btn" value="From Scratch">
+
     </div> 
     {% if data["show_solution_details"] %}
         <div class="vertical-flex-container info">
@@ -64,29 +61,51 @@
             <p>Max search depth: {{data["max_search_depth"]}}</p> 
             <p>Max Ram Usage: {{data["max_ram_usage"]}}MB</p>   
             <p>#Expanded nodes: {{data["num_expanded_nodes"]}}</p> 
+            {% if data["puzzle_dim"] == 3 %}
+                <br>
+                <p>Too easy?</p>
+                <p>Try <a id="change_puzzle_dim_link" href="#">15-puzzle</a> instead.</p>
+            {% else %}
+                <p>Too difficult?</p>
+                <p>Try <a id="change_puzzle_dim_link" href="#">8-puzzle</a> instead.</p>
+            {% endif %}
         </div> 
     {% else %}
-    <div class="vertical-flex-container info" id="help-area">
-        <h4>What to do?</h4>
-        {% if data["puzzle_type"] == "sample" %}
-            <p>Use arrow keys to uptain </p>
-            <p>the goal state: </p>
+        <div class="vertical-flex-container info" id="help-area">
+            <h4>What to do?</h4>
+            {% if data["puzzle_type"] == "sample" %}
+                <p>Use arrow keys to uptain </p>
+                <p>the goal state: </p>
+                <br>
+                {% if data["puzzle_dim"] == 3 %}
+                    <p>[0, 1, 2]</p>
+                    <p>[3, 4, 5]</p>
+                    <p>[6, 7, 8]</p>
+                {% else %}
+                    <p>[&nbsp0,&nbsp&nbsp1,&nbsp&nbsp2,&nbsp&nbsp3]</p>
+                    <p>[&nbsp4,&nbsp&nbsp5,&nbsp&nbsp6,&nbsp&nbsp7]</p>
+                    <p>[&nbsp8,&nbsp&nbsp9,&nbsp10,&nbsp11]</p>
+                    <p>[12, 13, 14, 15]</p>
+                {% endif %}
+                <br>
+                <p> Or try the automatic solver</p>
+                <p> with your preferred algorithm.</p>
+            {% else %}
+                <p>Create a puzzle yourself</p>
+                <p>by using arrow keys.</p>
+                <br>
+                <p>Solve it with your</p>
+                <p>preferred algorithm.</p>
+            {% endif %}
             <br>
-            <p> [0, 1, 2] </p>
-            <p> [3, 4, 5] </p>
-            <p> [6, 7, 8] </p>
-            <br>
-            <p> Or try the automatic solver</p>
-            <p> with your preferred algorithm.</p>
-        {% else %}
-            <p>Create a puzzle yourself by</p>
-            <p>messing up the solved puzzle</p>
-            <p>(use arrow keys).</p>
-            <br>
-            <p>Solve it with your</p>
-            <p>preferred algorithm.</p>
-        {% endif %}
-    </div>
+            {% if data["puzzle_dim"] == 3 %}
+                <p>Too easy?</p>
+                <p>Try <a id="change_puzzle_dim_link" href="#">15-puzzle</a> instead.</p>
+            {% else %}
+                <p>Too difficult?</p>
+                <p>Try <a id="change_puzzle_dim_link" href="#">8-puzzle</a> instead.</p>
+            {% endif %}
+        </div>
     {% endif %}
 </div>
 

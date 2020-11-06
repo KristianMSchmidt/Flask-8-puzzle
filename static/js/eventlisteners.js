@@ -28,6 +28,7 @@ function set_global_eventlisteners(){
             js_data["puzzle_dim"] = 3;
             js_data["search_type"] = "ast_alt";            
         }
+        js_data['puzzle_type'] = "sample"
         js_data['requested_action'] = "new_sample"
         submit();
     })
@@ -40,8 +41,9 @@ function set_global_eventlisteners(){
 
     document.getElementById("solve_reset_btn").addEventListener('click', event => {
         if(js_data["solve_or_reset_btn_value"] == "Solve"){
+           
             if (js_data["puzzle_dim"] == 4 && js_data["search_type"]=="ast_alt"){
-                alert("It might take several minutes to solve complicated 15-puzzles with A*-seach. However, if you have patience, you might find a solution with fewer moves than the one found with Gready best-first search")
+                alert("It might take several minutes to solve complicated 15-puzzles by A*-search.\r\n\r\nHowever, if you have patience, you might find a solution with fewer moves than the one found with Gready best-first search")
             }      
             document.getElementById("status").innerHTML = "Searching...";
             document.getElementById("solve_reset_btn").disabled = true;
@@ -59,8 +61,6 @@ function set_global_eventlisteners(){
         })
     }
             
-        
-
     //Disable default window scrolling on arrow-keys
     window.addEventListener("keydown", function(e) {
         if([37, 38, 39, 40].indexOf(e.keyCode) > -1) {
