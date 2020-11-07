@@ -495,7 +495,7 @@ class Puzzle:
 
     def solve_puzzle_gbfs(self):
         """
-        Solves the puzzle using gready_best_first_search with Manhattan-heuristics.
+        Solves the puzzle using greedy_best_first_search with Manhattan-heuristics.
         This is to find a short solution (not necessarily the shortest) in the minimal time.
         I add each child to the heap/frontier if it is not in the closed
         list (nb: this makes the heap longer)
@@ -571,17 +571,18 @@ class Puzzle:
         start_time = time.time()
 
         if method == "bfs":
-            solution_string, depth, num_expanded_nodes, max_search_depth = self.solve_puzzle_bfs()
+            #depth is number of moves in path_to_goal
+            path_to_goal, depth, num_expanded_nodes, max_search_depth = self.solve_puzzle_bfs()
         elif method == "dfs":
-            solution_string, depth, num_expanded_nodes, max_search_depth = self.solve_puzzle_dfs()
+            path_to_goal, depth, num_expanded_nodes, max_search_depth = self.solve_puzzle_dfs()
         elif method == "ast_naive":
-            solution_string, depth, num_expanded_nodes, max_search_depth = self.solve_puzzle_ast_naive()
+            path_to_goal, depth, num_expanded_nodes, max_search_depth = self.solve_puzzle_ast_naive()
         elif method == "ast":
-            solution_string, depth, num_expanded_nodes, max_search_depth = self.solve_puzzle_ast()
+            path_to_goal, depth, num_expanded_nodes, max_search_depth = self.solve_puzzle_ast()
         elif method == "ast_alt":
-            solution_string, depth, num_expanded_nodes, max_search_depth = self.solve_puzzle_ast_alternative()
+            path_to_goal, depth, num_expanded_nodes, max_search_depth = self.solve_puzzle_ast_alternative()
         elif method == "gbfs":
-            solution_string, depth, num_expanded_nodes, max_search_depth = self.solve_puzzle_gbfs()
+            path_to_goal, depth, num_expanded_nodes, max_search_depth = self.solve_puzzle_gbfs()
         else:
             print("Unknown solution method")
 
@@ -605,5 +606,5 @@ class Puzzle:
             self.update_puzzle(solution_string)
             print("Puzzle after applying solution string:\n",self)
 
-        return solution_string, depth, num_expanded_nodes, max_search_depth, running_time, memory_usage
+        return path_to_goal, depth, num_expanded_nodes, max_search_depth, running_time, memory_usage
 

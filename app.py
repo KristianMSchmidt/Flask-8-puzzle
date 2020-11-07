@@ -20,7 +20,7 @@ def index():
 
     if request.method == 'GET':
         action = "new_sample"
-        puzzle_dim = 3
+        puzzle_dim = 4  
         search_type = "ast_alt"
         puzzle_type = "sample"
    
@@ -71,7 +71,7 @@ def index():
             "all_search_types": all_search_types,
             "search_names":
                 {"ast_alt": "A*-search",
-                "gbfs": "Gready best-first Search ",
+                "gbfs": "Greedy best-first Search ",
                 "dfs": "Depth-first Search",
                 "bfs": "Breath-first Search"}
         }
@@ -93,8 +93,6 @@ def index():
         except:
             pass   # Move is off grid
 
-        if data["puzzle_type"] == "custom":
-            data["puzzle"] = puzzle._grid
 
     elif action == 'solve_puzzle':
         puzzle = Puzzle(puzzle_dim, puzzle_dim, data["puzzle"]);    
@@ -108,7 +106,11 @@ def index():
         data['solution_string'] = solution_string
         data["solution_computed"] = True
         data["show_solution_details"] =  True
-        data["solve_or_reset_btn_value"] = "Reset"
+        if data["puzzle_type"] == "sample":
+            data["solve_or_reset_btn_value"] = "Reset Sample"
+        else: 
+            data["solve_or_reset_btn_value"] = "Reset Custom"
+
         
         # Compute all board positions on the road to solution:
         puzzle_clone = puzzle.clone()

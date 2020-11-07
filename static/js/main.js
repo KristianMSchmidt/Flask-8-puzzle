@@ -1,13 +1,8 @@
 // Render puzzle
 render_puzzle(js_data["puzzle"])
 
-// Disable solve btn if puzzle is solved
-if(js_data["puzzle_is_solved"]){
-    document.getElementById("solve_reset_btn").disabled = true;
-}
-
 // Set global eventlisteners
-set_global_eventlisteners();
+set_eventlisteners();
 
 // Set the checked radio-button (defaults to A*-search)
 document.getElementById(js_data["search_type"]).checked = true;
@@ -21,8 +16,8 @@ if(js_data["show_solution_details"]){
 // On small screens: If moves by arrow keys are made, scroll to this part of the DOM
 let width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
 if(width < 950){
-    if(js_data["requested_action"] == "human_move"){
-        window.location = "#board"
+    if(js_data["requested_action"] == "move"){
+        window.location = "#title";
     }
 }
 
@@ -33,5 +28,4 @@ if(js_data['requested_action'] == 'solve_puzzle'){
     show_solution_step(move_num = 0, time_delay=200 )
     // Set puzzle equal to original puzzle to make reset possible
     js_data["puzzle"]=js_data["original_puzzle"]
-   // js_data["move_count"]=0;
 }

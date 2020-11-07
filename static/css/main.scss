@@ -28,7 +28,7 @@ html {
 .title-area {
   text-align: center;
   padding-left: 0.8em;
-  margin-bottom: 1.5em;
+  margin-bottom: 1.2em;
   margin-top: 0.5em;
   input {
     margin-bottom: 0.5em;
@@ -60,9 +60,9 @@ html {
   display: flex;
   flex-direction: column;
   align-items: center; /*horizontally centers the content items of the vertical flex boxes */
-  padding-bottom: 3em;
+  padding-bottom: 0em;
   input {
-    margin-top: 1em;
+    margin-top: 0.8em;
     height: 30px;
     width: 160px;
     border-radius: 60px;
@@ -139,7 +139,7 @@ html {
   }
 }
 
-@media only screen and (max-width: 950px) {
+@media only screen and (max-width: 800px) {
   /*985px) {*/
   .horizontal-flex-container {
     flex-direction: column;

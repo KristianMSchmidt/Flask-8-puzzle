@@ -27,7 +27,7 @@ def example2():
                                 [2, 6, 1, 4], \
                                 [3, 7, 5, 0]])
 
-    #Solve using Gready Best Fist Search. This is really fast (about 0.2s on my machine)
+    #Solve using Greedy Best Fist Search. This is really fast (about 0.2s on my machine)
     #but finds a solution w. relatively many moves (206 moves)
     #Joes_puzzle.solve_puzzle("gbfs",print_results=True)
 

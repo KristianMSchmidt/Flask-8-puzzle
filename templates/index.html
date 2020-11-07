@@ -39,16 +39,15 @@
             {% if data["puzzle_is_solved"] %}
                 Solved!
             {% else %}
-                Not solved yet
+                Not solved
             {% endif %}
         </p>
         <input type="button" id="solve_reset_btn" value="{{data["solve_or_reset_btn_value"]}}">
         <input type="button" id="new_sample_btn" value="New Sample">
-        <input type="button" id="make_custom_btn" value="From Scratch">
-
+        <input type="button" id="make_custom_btn" value="Make Custom">
     </div> 
-    {% if data["show_solution_details"] %}
-        <div class="vertical-flex-container info">
+    <div class="vertical-flex-container info">
+        {% if data["show_solution_details"] %}
             <h4>Solution details</h4>
             <p class="h6">Basics:</p>
             <p id="solution-method"></p>   
@@ -61,17 +60,7 @@
             <p>Max search depth: {{data["max_search_depth"]}}</p> 
             <p>Max Ram Usage: {{data["max_ram_usage"]}}MB</p>   
             <p>#Expanded nodes: {{data["num_expanded_nodes"]}}</p> 
-            {% if data["puzzle_dim"] == 3 %}
-                <br>
-                <p>Too easy?</p>
-                <p>Try <a id="change_puzzle_dim_link" href="#">15-puzzle</a> instead.</p>
-            {% else %}
-                <p>Too difficult?</p>
-                <p>Try <a id="change_puzzle_dim_link" href="#">8-puzzle</a> instead.</p>
-            {% endif %}
-        </div> 
-    {% else %}
-        <div class="vertical-flex-container info" id="help-area">
+        {% else %}
             <h4>What to do?</h4>
             {% if data["puzzle_type"] == "sample" %}
                 <p>Use arrow keys to uptain </p>
@@ -92,21 +81,23 @@
                 <p> with your preferred algorithm.</p>
             {% else %}
                 <p>Create a puzzle yourself</p>
-                <p>by using arrow keys.</p>
+                <p>by messing up the solved</p>
+                <p>puzzle (use arrow keys).</p>
                 <br>
                 <p>Solve it with your</p>
                 <p>preferred algorithm.</p>
             {% endif %}
+        {% endif %}
+        {% if data["puzzle_dim"] == 3 %}
             <br>
-            {% if data["puzzle_dim"] == 3 %}
-                <p>Too easy?</p>
-                <p>Try <a id="change_puzzle_dim_link" href="#">15-puzzle</a> instead.</p>
-            {% else %}
-                <p>Too difficult?</p>
-                <p>Try <a id="change_puzzle_dim_link" href="#">8-puzzle</a> instead.</p>
-            {% endif %}
-        </div>
-    {% endif %}
+            <p>Too easy?</p>
+            <p>Try <a id="change_puzzle_dim_link" href="#">15-puzzle</a> instead.</p>
+        {% else %}
+            <br>
+            <p>Too difficult?</p>
+            <p>Try <a id="change_puzzle_dim_link" href="#">8-puzzle</a> instead.</p>
+        {% endif %}
+    </div>
 </div>
 
 <form method="post" action="{{ url_for('index') }}" id="form">
