@@ -19,8 +19,7 @@ def example_1():
 #Example 2: Joe Warrens 4x4-puzzle. 
 def example2():
     """
-    This is a difficuelt puzzle and the choice of search algorithm now really matterns. 
-    It's prof Joe Warrens challenge puzzle of size 4x4. 
+    This is a difficult puzzle and the choice of search algorithm now really matters. 
     Optimal solution is about 80 moves.
     """    
     Joes_puzzle=Puzzle(4, 4, [[15, 11, 8, 12], \
@@ -28,14 +27,12 @@ def example2():
                                 [2, 6, 1, 4], \
                                 [3, 7, 5, 0]])
 
-    #Solve using Gready Best Fist Search. This is really fast (about 0.2s on my machine)
+    #Solve using Greedy Best Fist Search. This is really fast (about 0.2s on my machine)
     #but finds a solution w. relatively many moves (206 moves)
     #Joes_puzzle.solve_puzzle("gbfs",print_results=True)
 
     #Solve using A*-search w. Manhattan heuristics
     #This takes longer time to calculate, but te solution will be shorter (fewer moves)
-    Joes_puzzle.solve_puzzle("ast_naive", print_results=True)
+    Joes_puzzle.solve_puzzle("ast_alt", print_results=True)
 
-    #Solve using Breadth First Search
-    #Joes_puzzle.solve_puzzle("bfs",print_results=True)
 example2()

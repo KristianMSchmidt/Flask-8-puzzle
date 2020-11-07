@@ -1,7 +1,9 @@
-function render_puzzle(puzzle, agent){
-    for (let i=0; i < 3; i++) {
-        for (let j=0; j<3; j++){
-            id = agent + i.toString() + j.toString();
+function render_puzzle(puzzle){
+    //function that shows puzzle number on board
+    let dim = js_data["puzzle_dim"]
+    for (let i=0; i < dim; i++) {
+        for (let j=0; j < dim; j++){
+            id = "tile" + i.toString() + j.toString();
             element = document.getElementById(id);
             if(puzzle[i][j] == 0){
                 element.classList.add("zero-tile");
@@ -14,26 +16,22 @@ function render_puzzle(puzzle, agent){
         }
      }
 }
-
-function show_solution_step(move_num) {  
+ 
+function show_solution_step(move_num, time_delay) {  
     /* shows this animated computer solution */   
-    
-    if(js_data['ai_num_solution_steps'] < 100){
-        var time_delay = 250;
-    } else{
-        var time_delay = 2;
-    }
     
     setTimeout(function() {   //  
         let puzzle = js_data['animated_solution'][move_num]
-        render_puzzle(puzzle, "ai")
-        move_num ++;                    
-        document.getElementById("ai_move_count").innerHTML = `#Moves: ${move_num}`;
-        if (move_num < js_data['ai_num_solution_steps']) {          
-            show_solution_step(move_num);              
+        render_puzzle(puzzle)
+        move_num ++;
+        time_delay = time_delay*0.995;
+        console.log(time_delay)
+        document.getElementById("move_count").innerHTML = `#Moves: ${move_num}`;
+        if (move_num < js_data['num_solution_steps']) {         
+            show_solution_step(move_num, time_delay);              
         } 
         else{
-            document.getElementById("ai_status").innerHTML = "Solved!"
+            document.getElementById("status").innerHTML = "Solved!"
         }                      
     }, time_delay);
 }

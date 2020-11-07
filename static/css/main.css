@@ -13,13 +13,15 @@ html {
 .title-area {
   text-align: center;
   padding-left: 0.8em;
-  margin-bottom: 2em;
+  margin-bottom: 1.2em;
+  margin-top: 0.5em;
 }
 
 .title-area input {
+  margin-bottom: 0.5em;
   margin-top: 0.5em;
   height: 40px;
-  width: 200px;
+  width: 180px;
   border-radius: 60px;
   font-size: 18px;
 }
@@ -46,6 +48,7 @@ html {
   -webkit-box-align: start;
       -ms-flex-align: start;
           align-items: flex-start;
+  margin-bottom: 0em;
 }
 
 .vertical-flex-container {
@@ -61,15 +64,19 @@ html {
       -ms-flex-align: center;
           align-items: center;
   /*horizontally centers the content items of the vertical flex boxes */
-  padding-bottom: 3em;
+  padding-bottom: 0em;
 }
 
 .vertical-flex-container input {
-  margin-top: 1em;
+  margin-top: 0.8em;
   height: 30px;
   width: 160px;
   border-radius: 60px;
   font-size: 15px;
+}
+
+.vertical-flex-container h3 {
+  margin-bottom: 0.5em;
 }
 
 .vertical-flex-container input:focus {
@@ -115,10 +122,6 @@ html {
 .board {
   display: -ms-grid;
   display: grid;
-  -ms-grid-columns: 1fr 1fr 1fr;
-      grid-template-columns: 1fr 1fr 1fr;
-  -ms-grid-rows: 1fr 1fr 1fr;
-      grid-template-rows: 1fr 1fr 1fr;
   border-bottom: 1px solid black;
   border-left: 1px solid black;
   gap: 0;
@@ -141,7 +144,23 @@ html {
   background-color: white;
 }
 
-@media only screen and (max-width: 950px) {
+.board.dim3 {
+  -ms-grid-columns: 1fr 1fr 1fr;
+      grid-template-columns: 1fr 1fr 1fr;
+  -ms-grid-rows: 1fr 1fr 1fr;
+      grid-template-rows: 1fr 1fr 1fr;
+}
+
+.board.dim4 {
+  -ms-grid-columns: 1fr 1fr 1fr 1fr;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+  -ms-grid-rows: 1fr 1fr 1fr 1fr;
+      grid-template-rows: 1fr 1fr 1fr 1fr;
+  width: 250px;
+  height: 250px;
+}
+
+@media only screen and (max-width: 800px) {
   /*985px) {*/
   .horizontal-flex-container {
     -webkit-box-orient: vertical;

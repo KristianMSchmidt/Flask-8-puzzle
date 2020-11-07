@@ -28,11 +28,13 @@ html {
 .title-area {
   text-align: center;
   padding-left: 0.8em;
-  margin-bottom: 2em;
+  margin-bottom: 1.2em;
+  margin-top: 0.5em;
   input {
+    margin-bottom: 0.5em;
     margin-top: 0.5em;
     height: 40px;
-    width: 200px;
+    width: 180px;
     border-radius: 60px;
     font-size: 18px;
   }
@@ -45,24 +47,29 @@ html {
     color: set-text-color($button_color);
   }
 }
+
 .horizontal-flex-container {
   width: 100%;
   display: flex;
   flex-direction: row;
   align-items: flex-start;
+  margin-bottom: 0em;
 }
 .vertical-flex-container {
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center; /*horizontally centers the content items of the vertical flex boxes */
-  padding-bottom: 3em;
+  padding-bottom: 0em;
   input {
-    margin-top: 1em;
+    margin-top: 0.8em;
     height: 30px;
     width: 160px;
     border-radius: 60px;
     font-size: 15px;
+  }
+  h3 {
+    margin-bottom: 0.5em;
   }
   input:focus {
     /*outline: 3px dashed $tile_color;*/
@@ -77,7 +84,6 @@ html {
       margin-left: 1em;
       margin-right: 0.5em;
     }
-
     input {
       width: 200px; /*button*/
     }
@@ -101,8 +107,6 @@ html {
 
 .board {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  grid-template-rows: 1fr 1fr 1fr;
   border-bottom: 1px solid black;
   border-left: 1px solid black;
   gap: 0;
@@ -122,9 +126,20 @@ html {
       background-color: $zero-tile-color;
     }
   }
+  &.dim3 {
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+  }
+
+  &.dim4 {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr;
+    width: 250px;
+    height: 250px;
+  }
 }
 
-@media only screen and (max-width: 950px) {
+@media only screen and (max-width: 800px) {
   /*985px) {*/
   .horizontal-flex-container {
     flex-direction: column;
