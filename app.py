@@ -21,7 +21,7 @@ def index():
     if request.method == 'GET':
         action = "new_sample"
         puzzle_dim = 4  
-        search_type = "ast_alt"
+        search_type = "gbfs"
         puzzle_type = "sample"
    
     else: 
