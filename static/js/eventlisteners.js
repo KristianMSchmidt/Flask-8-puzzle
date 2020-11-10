@@ -62,15 +62,15 @@ function set_eventlisteners(){
             js_data["search_type"] = js_data["all_search_types"][i];
             if(js_data["puzzle_dim"] == 4){
                 if(js_data["search_type"]=="ast_alt"){
-                    alert("Warning: Solving complicated 15-puzzles by A*-search might take several minutes.\r\n\r\nHowever, if you have the patience, you might find an elegant solution with fewer moves than a solution found by greedy best-first search.")
+                    alert("Warning: Solving complicated 15-puzzles by A*-Search might take several minutes.\r\n\r\nHowever, if you have the patience, you might find an elegant solution with fewer moves than a solution found by Greedy Best-First Search.")
                 }
             }
             if(js_data["puzzle_dim"] == 3){
                 if(js_data["search_type"]=="gbfs"){
-                    alert("Greedy best-first search is fast and reliable, but the solutions found by this algorithm typically involve more moves than a solution found with A*-search or best-first search.")
+                    alert("Greedy Best-First Search is fast and reliable, but the solutions found by this algorithm typically involve more moves than a solution found with A*-search or Breadth-First Search.")
                 }
                 if(js_data["search_type"]=="dfs"){
-                    alert("Solving puzzles by depth-first usually results in solutions with ridiculously many moves.")
+                    alert("Solving puzzles by Depth-First Search usually results in solutions with ridiculously many moves.")
                 }
             }
 

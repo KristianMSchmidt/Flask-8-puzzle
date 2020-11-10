@@ -70,10 +70,10 @@ def index():
             "show_solution_details": False,
             "all_search_types": all_search_types,
             "search_names":
-                {"ast_alt": "A*-search",
-                "gbfs": "Greedy best-first Search ",
-                "dfs": "Depth-first Search",
-                "bfs": "Breath-first Search"}
+                {"ast_alt": "A*-Search",
+                "gbfs": "Greedy Best-First Search ",
+                "dfs": "Depth-First Search",
+                "bfs": "Breadth-First Search"}
         }
         
     elif action == 'human_move':
