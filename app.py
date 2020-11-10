@@ -9,9 +9,9 @@
 from flask import Flask, render_template, request
 import timeit, json
 from random import choice as random_choice
-from python.Puzzle import Puzzle
-from python.utils import convert_solution_string
-from python.puzzle_collection import eight_puzzles, fifteen_puzzles
+from backend.Puzzle import Puzzle
+from backend.utils import convert_solution_string
+from backend.puzzle_collection import eight_puzzles, fifteen_puzzles
 
 app = Flask('__name__')
 
