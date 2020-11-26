@@ -3,7 +3,9 @@ from heapq import heappush, heappop
 
 class Puzzle:
     """
-    Initialize puzzle. Returns a Puzzle object
+    Class that holds state of puzzle, methods for moving tiles and methods for solving the puzzle
+    with various search strategies. Puzzle can be of any height and width. If no initial grid is given
+    the puzzle is initialized its solved state.
     """
     def __init__(self, puzzle_height, puzzle_width, initial_grid = None,
                 last_move = "", search_depth = 0, parent = None):
@@ -32,17 +34,22 @@ class Puzzle:
     
     def __lt__(self, other):
         """
-        Formal size comparison of puzzles. 
-        This is needed for "heappush" in solve-algorithms to be stable. 
+        Size comparison of puzzles. 
+        This will be used by heap, when manhattan-distances of to grids are equal.
         """
         return self
-
+        if self._search_depth < other._search_depth:
+            return self
+        else: 
+            return other
+            
     def clone(self):
         """
         Make a copy of the puzzle to update during solving
         Returns a Puzzle object
         """
-        new_puzzle = Puzzle(self._height, self._width, self._grid, self._last_move, self._search_depth, self._parent)
+        new_puzzle = Puzzle(self._height, self._width, self._grid, self._last_move, 
+                            self._search_depth, self._parent)
         return new_puzzle
 
     ########################################################
@@ -52,7 +59,7 @@ class Puzzle:
         """
         Locate the current position of the tile that will be at
         position (solved_row, solved_col) when the puzzle is solved
-        Returns a tuple of two integers
+        Returns a tuple of two integers.
         """
         solved_value = (solved_col + self._width * solved_row)
 
@@ -116,7 +123,7 @@ class Puzzle:
 
     def recover_path(self):
         """
-        Recovers path takes from startnode to the node in question.
+        Recovers path taken from startnode to the node in question.
         """
         reverse_path_to_goal = ""
         node = self
@@ -140,9 +147,14 @@ class Puzzle:
     def solve_puzzle_dfs(self):
         """
         Solves the puzzle using Depth-First Search.
+        
+        Search is implemented with a stack (last-in first-out).
+        
+        Please note that depth-first search is really a quite stupid search strategy for
+        solving puzzles of this type - I only implement it to compare results with better algorithms. 
         """
-        #initialize stack (I use lists)
-        stack = [self]  #the stack is "the frontier"
+        # Initialize stack (I use list datastructure to do this)
+        stack = [self]  # the stack is "the frontier"
 
         # Set of board positions that are already in frontier/queue or have been there earlier. I use
         # a set datastructure for fast lookups
@@ -153,47 +165,62 @@ class Puzzle:
                                 #children has been added to the stack
         max_search_depth = 0
         count = 0
+        
         while stack:
             # Remove node from stack
-            node = stack.pop()
+            node = stack.pop()   # pop returns the last element in the list 
 
             #Check if solution is found
             if node.is_solved():
                 path_to_goal = node.recover_path()
-                return path_to_goal, len(path_to_goal), num_expanded_nodes, max_search_depth
+                return path_to_goal, num_expanded_nodes, max_search_depth
 
             # Expand the node.
             #   To expand a given node, we generate successor nodes adjacent to the current node, and add them to the
             #   frontier set. Note that if these successor nodes are already in the frontier, or have already been
             #   visited, then they should not be added to the frontier again.
+
             num_expanded_nodes += 1
 
             valid_directions = node.valid_directions()
-
+         
             #Push onto the stack in reverse-UDLR order; popping off results in UDLR order.
             for direction in reversed(valid_directions):
+               
                 child = node.clone()
                 child.update_puzzle(direction)
                 child_game_state = str(child._grid)
-                child._search_depth += 1
-                current_search_depth = child._search_depth
+                child._search_depth += 1  
+                current_search_depth = child._search_depth 
 
                 if child_game_state in in_frontier_or_explored:
+                    # Note that we discard the child if the game state is already being explored even if the search-depth
+                    # of the current child might be shorter. It wouldn't be too difficult to change this, but it would make
+                    # the algorithm slower.  
                     continue
-
+                
+                # One one easily add a condition like this to stop search depths from being ridiculously long.
+                # I could also make the depth first serach iterative, will still longer max-depths (as in 
+                # my implementation of 2048-game. However, for now, I would like the depth first search
+                # to bee really vanilla depth first search to see the extreme case.)
+                #if current_search_depth > 200:
+                 #   continue
+             
                 child._last_move = direction
                 child._parent = node
                 stack.append(child)
                 in_frontier_or_explored.add(child_game_state)
 
-
             if current_search_depth > max_search_depth:
                 max_search_depth = current_search_depth
-                #print "current max search depth", max_search_depth
-
+            
     def solve_puzzle_bfs(self):
         """
-        Solves the puzzle using Breadth-First search.
+        Solves the puzzle using Breadth-First search. 
+        Implementation is almost identical to the Depth-First-Search above, but using a queue
+        (first in-first out) rather that a stack ensures breadth-first quality of the search.        
+        This search strategy will give a lot shorter solution strings, as simple solutions will be found 
+        before maker deeper search in one direction.  
         """
         frontier = queue.Queue() #q.put(x), q.get_nowait()
         frontier.put(self)
@@ -214,7 +241,7 @@ class Puzzle:
             #Check if solution is found
             if node.is_solved():
                 path_to_goal = node.recover_path()
-                return path_to_goal, len(path_to_goal), num_expanded_nodes, max_search_depth
+                return path_to_goal, num_expanded_nodes, max_search_depth
 
             # Expand the node.
             #   To expand a given node, we generate successor nodes adjacent to the current node, and add them to the
@@ -246,29 +273,76 @@ class Puzzle:
     def manhattan_dist(self):
         """
         Computes the total manhattan-distance between the given puzzle and the solved game state.
+        For each tile in grid, calcute how many moves it would take to get the tile to its 
+        right position. Add it all up.        
         """
         answer = 0
-
-        #Calculate first row separately, as zero_tile should not be part of sum:
-        for col in range(1, self._width):
-            current_row, current_col = self.current_position(0,col)
-            answer += abs(col-current_col) + current_row
-
-        #Now the rest of the rows
-        for row in range(1, self._height):
+        for row in range(self._height):
             for col in range(self._width):
-                current_row, current_col = self.current_position(row,col)
-                answer += abs(col-current_col) + abs(row - current_row)
-
+                if not (row, col) == (0, 0):  #zero-tile should not be part of the sum
+                    current_row, current_col = self.current_position(row, col)
+                    answer += abs(col-current_col) + abs(row - current_row)
         return answer
+    
+    def solve_puzzle_gbfs(self):
+        """
+        Solves the puzzle using greedy_best_first_search with Manhattan-heuristics.
+        This is to find a short solution (not necessarily the shortest) in the minimal time.
+        I add each child to the heap/frontier if it is not in the closed
+        list (nb: this makes the heap longer)
+        """
+        frontier = [] # The "frontier". I use heap to do fast extract minimums
+        heappush(frontier, (self.manhattan_dist(), self))
+        max_search_depth = 0
 
+        closed = set()
+
+        while frontier:
+            #Remove node from heap
+            _, node = heappop(frontier) #heappop pics node with least Manhattan distance
+                                        # This is the "best-first" quality of the search
+
+            #Check if solution is found
+            if node.is_solved():
+                path_to_goal = node.recover_path()
+                num_expanded_nodes = len(closed) + 1
+                return path_to_goal, num_expanded_nodes, max_search_depth
+
+            #Add node-grid to closed set 
+            node_grid = str(node._grid)
+            closed.add(node_grid)
+
+            # Expand the node.
+            #   To expand a given node, we generate successor nodes adjacent to the current node, and add them to the
+            #   frontier set. Note that if these successor nodes are already in the frontier, or have already been
+            #   visited, then they should not be added to the frontier again.
+            valid_directions = node.valid_directions()
+            for direction in valid_directions:
+                child = node.clone()
+                child.update_puzzle(direction)
+                c_grid = str(child._grid)
+
+                if c_grid in closed: #already evaluated a node with this grid
+                    continue
+
+                child._last_move = direction
+                child._search_depth += 1
+                child._parent = node
+
+                heappush(frontier, (child.manhattan_dist(), child))
+
+            # Update current search depth:
+            current_search_depth = node._search_depth + 1
+
+            if current_search_depth > max_search_depth:
+                max_search_depth = current_search_depth
 
     def solve_puzzle_ast_naive(self):
         """
         Solves the puzzle using A*search with Manhattan-distance heuristics.
         Naive brute force version for test purposes
         """
-        frontier = [(self.manhattan_dist() + self._search_depth, 0, self)]
+        frontier = [(self.manhattan_dist() + self._search_depth, 0, self)]  
 
         closed = set()
 
@@ -278,14 +352,14 @@ class Puzzle:
 
         while frontier:
             #Remove node from frontier
-            x,y,node = min(frontier)
+            x,y,node = min(frontier)    #pick the most promissing node from the frontier
             frontier.remove((x,y,node))
 
             #Check if solution is found
             if node.is_solved():
                 path_to_goal = node.recover_path()
                 num_expanded_nodes = len(closed) + 1
-                return path_to_goal, len(path_to_goal), num_expanded_nodes, max_search_depth
+                return path_to_goal, num_expanded_nodes, max_search_depth
 
             #Add node to closed set and remove it from frontier_dict
             node_grid = str(node._grid)
@@ -362,7 +436,7 @@ class Puzzle:
             if node.is_solved():
                 path_to_goal = node.recover_path()
                 num_expanded_nodes = len(closed) + 1
-                return path_to_goal, len(path_to_goal), num_expanded_nodes, max_search_depth
+                return path_to_goal, num_expanded_nodes, max_search_depth
 
             #Add node to closed set and remove it from frontier_dict
             node_grid = str(node._grid)
@@ -445,7 +519,7 @@ class Puzzle:
             if node.is_solved():
                 path_to_goal = node.recover_path()
                 num_expanded_nodes = len(closed) + 1
-                return path_to_goal, len(path_to_goal), num_expanded_nodes, max_search_depth
+                return path_to_goal, num_expanded_nodes, max_search_depth
 
             #Add node to closed set and remove it from frontier_dict
             node_grid = str(node._grid)
@@ -492,74 +566,7 @@ class Puzzle:
 
             if current_search_depth > max_search_depth:
                 max_search_depth = current_search_depth
-
-    def solve_puzzle_gbfs(self):
-        """
-        Solves the puzzle using greedy_best_first_search with Manhattan-heuristics.
-        This is to find a short solution (not necessarily the shortest) in the minimal time.
-        I add each child to the heap/frontier if it is not in the closed
-        list (nb: this makes the heap longer)
-        """
-        frontier = [] # The "frontier". I use heap to do fast extract minimums
-        heappush(frontier, (self.manhattan_dist(), self))
-        max_search_depth = 0
-
-        closed = set()
-
-        while frontier:
-            #Remove node from heap
-            _, node = heappop(frontier)
-
-            #Check if solution is found
-            if node.is_solved():
-                path_to_goal = node.recover_path()
-                num_expanded_nodes = len(closed) + 1
-                return path_to_goal, len(path_to_goal), num_expanded_nodes, max_search_depth
-
-            #Add node to closed set and remove it from frontier_dict
-            node_grid = str(node._grid)
-            closed.add(node_grid)
-
-            # Expand the node.
-            #   To expand a given node, we generate successor nodes adjacent to the current node, and add them to the
-            #   frontier set. Note that if these successor nodes are already in the frontier, or have already been
-            #   visited, then they should not be added to the frontier again.
-            valid_directions = node.valid_directions()
-            for direction in valid_directions:
-                child = node.clone()
-                child.update_puzzle(direction)
-                c_grid = str(child._grid)
-
-                if c_grid in closed: #already evaluated
-                    continue
-
-                child._last_move = direction
-                child._search_depth += 1
-                child._parent = node
-
-                #If the child is not in the closed list, if chosen to add it to the frontier
-                #nomatter it is an interely new game state or if a similar game_state is already in the fronter
-                # This is not wrong (I think), but it makes the heap a bit longer.
-                # The suggested solution is to update the heap (using key_down-techniques),
-                # if the game state is already there, but with a
-                # higher search_depth
-                heappush(frontier, (child.manhattan_dist(), child))
-
-            #Check current search depth:
-            current_search_depth = node._search_depth + 1
-
-            if current_search_depth > max_search_depth:
-                max_search_depth = current_search_depth
-
-    def solve_puzzle_rigid(self):
-        """
-        This solution method is very different from the ones above. The solution is not found by
-        search, but by a rigid solution algorithm that always works. 
-        This method is fast (short calculation time), but the number of moves in the 
-        solution will probably be longer than the number of moves found by the best search algorithms. 
-        """
         
-
     def solve_puzzle(self, method, print_results = False):
         """
         Takes a puzzle object and a method ("bfs", "dfs" or "ast_alt" or "gbfs") and returns
@@ -572,17 +579,17 @@ class Puzzle:
 
         if method == "bfs":
             #depth is number of moves in path_to_goal
-            path_to_goal, depth, num_expanded_nodes, max_search_depth = self.solve_puzzle_bfs()
+            path_to_goal, num_expanded_nodes, max_search_depth = self.solve_puzzle_bfs()
         elif method == "dfs":
-            path_to_goal, depth, num_expanded_nodes, max_search_depth = self.solve_puzzle_dfs()
+            path_to_goal, num_expanded_nodes, max_search_depth = self.solve_puzzle_dfs()
         elif method == "ast_naive":
-            path_to_goal, depth, num_expanded_nodes, max_search_depth = self.solve_puzzle_ast_naive()
+            path_to_goal, num_expanded_nodes, max_search_depth = self.solve_puzzle_ast_naive()
         elif method == "ast":
-            path_to_goal, depth, num_expanded_nodes, max_search_depth = self.solve_puzzle_ast()
+            path_to_goal, num_expanded_nodes, max_search_depth = self.solve_puzzle_ast()
         elif method == "ast_alt":
-            path_to_goal, depth, num_expanded_nodes, max_search_depth = self.solve_puzzle_ast_alternative()
+            path_to_goal, num_expanded_nodes, max_search_depth = self.solve_puzzle_ast_alternative()
         elif method == "gbfs":
-            path_to_goal, depth, num_expanded_nodes, max_search_depth = self.solve_puzzle_gbfs()
+            path_to_goal, num_expanded_nodes, max_search_depth = self.solve_puzzle_gbfs()
         else:
             print("Unknown solution method")
 
@@ -593,18 +600,26 @@ class Puzzle:
         if print_results:
             print("")
             print("Search details:")
-            #print "Calculated solution string:'{}'".format(solution_string))
-            print("Cost of path:", len(solution_string))
+            #print "Calculated solution string:'{}'".format(path_to_goal))
+            print("Length of solution path:", len(path_to_goal))
             print("Total number of expanded nodes", num_expanded_nodes)
-            print("Search depth:", len(solution_string))
             print("Max search depth:", max_search_depth)
             print("Running time of search:", running_time, "seconds")
             print("Max_RAM_usage (in millions):", memory_usage)
-            #print "Expanded solution string:", convert_solution_string(solution_string)
+            #print("Path to goal", path_to_goal)
             print("")
             print("Control of solution:")
-            self.update_puzzle(solution_string)
+            self.update_puzzle(path_to_goal)
             print("Puzzle after applying solution string:\n",self)
 
-        return path_to_goal, depth, num_expanded_nodes, max_search_depth, running_time, memory_usage
+        return path_to_goal, num_expanded_nodes, max_search_depth, running_time, memory_usage
 
+if __name__ == "__main__":
+    p = Puzzle(3,3)
+    p._grid = [
+            [7,5,2],
+            [1,3,4],
+            [8,6,0]
+
+        ]
+    p.solve_puzzle("gbfs", print_results=True)

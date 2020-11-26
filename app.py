@@ -93,10 +93,9 @@ def index():
         except:
             pass   # Move is off grid
 
-
     elif action == 'solve_puzzle':
         puzzle = Puzzle(puzzle_dim, puzzle_dim, data["puzzle"]);    
-        solution_string, num_solution_steps, num_expanded_nodes, max_search_depth, running_time, max_ram_usage \
+        solution_string, num_expanded_nodes, max_search_depth, running_time, max_ram_usage \
                 = puzzle.solve_puzzle(data['search_type'])
         data['running_time'] = round(running_time, 5)
         data['max_ram_usage'] = round(max_ram_usage, 2)  #number is in megabytes
