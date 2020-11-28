@@ -33,7 +33,7 @@ def example2():
 
     #Solve using A*-search w. Manhattan heuristics
     #This takes longer time to calculate, but te solution will be shorter (fewer moves)
-    #Joes_puzzle.solve_puzzle("ast_alt", print_results=True)
+    #Joes_puzzle.solve_puzzle("ast", print_results=True)
 
 if __name__ == "__main__":
     example1()

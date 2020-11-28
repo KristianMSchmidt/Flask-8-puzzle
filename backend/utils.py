@@ -14,7 +14,5 @@ def convert_solution_string(sol_str):
             path_to_goal.append("Left")
         elif letter == "r":
             path_to_goal.append("Right")
-        else:
-            assert False, "Invalid direction " + letter
     
     return path_to_goal
