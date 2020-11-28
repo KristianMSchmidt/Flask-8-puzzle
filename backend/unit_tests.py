@@ -5,8 +5,9 @@ import unittest
 from Puzzle import Puzzle
 from puzzle_collection import eight_puzzles
 from heapq import heappush, heappop
+import time
 
-do_slow_tests = False
+do_slow_tests = True
 
 class Test_simple_methods(unittest.TestCase):
 
@@ -136,29 +137,6 @@ class Test_simple_methods(unittest.TestCase):
         self.assertEqual(heappop(frontier), (2, p2))
         self.assertEqual(heappop(frontier), (3, p1))
         self.assertEqual(heappop(frontier), (4, p0))
-
-        # in case of ties, heappush should return the node with the least search_depth
-        p0 = Puzzle(3,3)
-        p1 = Puzzle(3,3)
-        frontier = [] 
-        p1._search_depth += 1
-        self.assertTrue(p0 < p1)        
-        heappush(frontier, (0, p0))
-        heappush(frontier, (0, p1))
-        self.assertTrue((0, p0) > (0,p1))
-
-        #self.assertEqual(heappop(frontier), (0, p0))
-        
-        frontier = []         
-        p0._search_depth = 1
-        p1._search_depth = 0
-        self.assertTrue(p1 < p0) 
-        heappush(frontier, (0, p0))
-        heappush(frontier, (0, p1))
-        self.assertTrue((0,p1) < (0,p0))
-
-        #self.assertEqual(heappop(frontier), (0, p1))
-
 
         
     def test_update_puzzle(self):
@@ -339,7 +317,7 @@ if do_slow_tests:
         def test_solve_puzzle_bfs(self):
             #Let's start out by testing a puzzle, that is already solved.
             p = Puzzle(3,3) 
-            path_to_goal, num_expanded_nodes, max_search_depth = p.solve_puzzle_dfs()
+            path_to_goal, num_expanded_nodes, max_search_depth = p.solve_puzzle_bfs()
             self.assertTrue(p.is_solved)
             self.assertEqual(path_to_goal, "")
             self.assertEqual(max_search_depth, 0)
@@ -371,11 +349,51 @@ if do_slow_tests:
             for grid in eight_puzzles: 
                 puzzle = Puzzle(3,3, grid)
                 path_to_goal, num_expanded_nodes, max_search_depth = puzzle.solve_puzzle_bfs()
-                self.assertTrue(p.is_solved)
+                self.assertTrue(puzzle.is_solved)
                 self.assertTrue(len(path_to_goal) > 0)
                 self.assertTrue(max_search_depth >= len(path_to_goal))
                 self.assertTrue(num_expanded_nodes >= max_search_depth)
-        
+    
+    class Test_GBFS(unittest.TestCase):
+       
+        def test_solve_puzzle_gbfs(self):
+            #Let's start out by testing a puzzle, that is already solved.
+            p = Puzzle(3,3) 
+            path_to_goal, num_expanded_nodes, max_search_depth = p.solve_puzzle_gbfs()
+            self.assertTrue(p.is_solved)
+            self.assertEqual(path_to_goal, "")
+            self.assertEqual(max_search_depth, 0)
+            self.assertEqual(num_expanded_nodes, 0)
+            
+            #Now, let's simply test that all eightpuzzles are solved - plus some basic sanity control
+            for grid in eight_puzzles: 
+                puzzle = Puzzle(3,3, grid)
+                path_to_goal, num_expanded_nodes, max_search_depth = puzzle.solve_puzzle_gbfs()
+                self.assertTrue(puzzle.is_solved)
+                self.assertTrue(len(path_to_goal) > 0)
+                self.assertTrue(max_search_depth >= len(path_to_goal))
+                self.assertTrue(num_expanded_nodes >= max_search_depth)
+    
+    class Test_AST(unittest.TestCase):
+            
+        def test_solve_puzzle_ast(self):
+            #Let's start out by testing a puzzle, that is already solved.
+            p = Puzzle(3,3) 
+            path_to_goal, num_expanded_nodes, max_search_depth = p.solve_puzzle_ast()
+            self.assertTrue(p.is_solved)
+            self.assertEqual(path_to_goal, "")
+            self.assertEqual(max_search_depth, 0)
+            self.assertEqual(num_expanded_nodes, 0)
+            start_time = time.time()
+            #Now, let's simply test that all eightpuzzles are solved - plus some basic sanity control
+            for grid in eight_puzzles: 
+                puzzle = Puzzle(3,3, grid)
+                path_to_goal, num_expanded_nodes, max_search_depth = puzzle.solve_puzzle_ast()
+                self.assertTrue(puzzle.is_solved)
+                self.assertTrue(len(path_to_goal) > 0)
+                self.assertTrue(max_search_depth >= len(path_to_goal))
+                self.assertTrue(num_expanded_nodes >= max_search_depth)
+            print(time.time() - start_time)
 if __name__ == '__main__':
     unittest.main()
     

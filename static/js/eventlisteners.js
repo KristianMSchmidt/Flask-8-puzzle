@@ -26,7 +26,7 @@ function set_eventlisteners(){
             js_data["search_type"] = "gbfs";            
         } else{
             js_data["puzzle_dim"] = 3;
-            js_data["search_type"] = "ast_alt";            
+            js_data["search_type"] = "ast";            
         }
         js_data['puzzle_type'] = "sample"
         js_data['requested_action'] = "new_sample"
@@ -57,26 +57,30 @@ function set_eventlisteners(){
         
     })
 
-    for (let i = 0; i < js_data["all_search_types"].length; i++) {
-        document.getElementById(js_data["all_search_types"][i]).addEventListener('change', event => {
-            js_data["search_type"] = js_data["all_search_types"][i];
-            if(js_data["puzzle_dim"] == 4){
-                if(js_data["search_type"]=="ast_alt"){
-                    alert("Warning: Solving complicated 15-puzzles by A*-Search might take several minutes.\r\n\r\nHowever, if you have the patience, you might find an elegant solution with fewer moves than a solution found by Greedy Best-First Search.")
+        for (let i = 0; i < js_data["all_search_types"].length; i++) {
+            document.getElementById(js_data["all_search_types"][i]).addEventListener('change', event => {
+                js_data["search_type"] = js_data["all_search_types"][i];
+                if((js_data["puzzle_dim"] == 4) && (js_data["search_type"]=="ast")){
+                        alert("Warning: Solving complicated 15-puzzles by A*-Search might take several minutes.\r\n\r\nHowever, if you have the patience, A*-search is guaranteed to find the shortest possible solution (fewest number of moves).\r\n\r\nA*-search uses the Manhattan-distance heuristics, but also considers path-length back in time.")
                 }
-            }
-            if(js_data["puzzle_dim"] == 3){
-                if(js_data["search_type"]=="gbfs"){
-                    alert("Greedy Best-First Search is fast and reliable, but the solutions found by this algorithm typically involve more moves than a solution found with A*-search or Breadth-First Search.")
-                }
-                if(js_data["search_type"]=="dfs"){
-                    alert("Solving puzzles by Depth-First Search usually results in solutions with ridiculously many moves.")
-                }
-            }
+                else {
+                    if(js_data["search_type"]=="gbfs"){
+                        alert("Greedy Best-First Search will simply try to solve the puzzle as quickly as possible, without considering the number of moves needed to reach the solved state of the puzzle. \r\n\r\Greedy Best-First Search is guided solely by the Manhattan-distance heuristic.")
+                    }
+                    if(js_data["search_type"]=="dfs"){
+                        alert("Solving puzzles by Depth-First Search usually results in solutions with ridiculously many moves. \r\n\r\nIt is an 'un-intelligent' kinds of search, which blindly and stubbornly keeps searching in one direction, making the path longer and longer, untill it either reaches the goal or  a dead end.")
+                    }
+                    if(js_data["search_type"]=="bfs"){
+                        alert("Breath-First search is guaranteed to solve the puzzle in the fewest possible number of moves. \r\n\r\nHowever, it is an 'un-intelligent' kind search, exploring all possible directions blindly, and hence takes a long time. A*-Search is better in all regards.")
+                    }
+                    if(js_data["search_type"]=="ast"){
+                        alert("Like Breath-First search, A*-search is guaranteed to find the shortest possible solution (fewest moves). But it usually does this way faster than Breath-First search since the search is guided by the Manhattan-distance heuristics.")
+                    }             
 
-        })
-    }
-            
+                }
+            })
+        }
+                
     //Disable default window scrolling on arrow-keys
     window.addEventListener("keydown", function(e) {
         if([37, 38, 39, 40].indexOf(e.keyCode) > -1) {

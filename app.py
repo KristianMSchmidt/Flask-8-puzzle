@@ -50,10 +50,10 @@ def index():
             puzzle_is_solved =  True
     
         if puzzle_dim == 3:
-            all_search_types = ["ast_alt", "gbfs", "bfs", "dfs"]
+            all_search_types = ["ast", "gbfs", "bfs", "dfs"]
  
         elif puzzle_dim == 4:
-            all_search_types = ["ast_alt", "gbfs"]        
+            all_search_types = ["ast", "gbfs"]        
 
         data = {
             "puzzle_title": puzzle_title,
@@ -70,7 +70,7 @@ def index():
             "show_solution_details": False,
             "all_search_types": all_search_types,
             "search_names":
-                {"ast_alt": "A*-Search",
+                {"ast": "A*-Search",
                 "gbfs": "Greedy Best-First Search ",
                 "dfs": "Depth-First Search",
                 "bfs": "Breadth-First Search"}
