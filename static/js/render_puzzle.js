@@ -18,14 +18,13 @@ function render_puzzle(puzzle){
 }
  
 function show_solution_step(move_num, time_delay) {  
-    /* shows this animated computer solution */   
+    /* shows the animated computer solution */   
     
     setTimeout(function() {   //  
         let puzzle = js_data['animated_solution'][move_num]
         render_puzzle(puzzle)
         move_num ++;
         time_delay = time_delay*0.995;
-        console.log(time_delay)
         document.getElementById("move_count").innerHTML = `#Moves: ${move_num}`;
         if (move_num < js_data['num_solution_steps']) {         
             show_solution_step(move_num, time_delay);              
