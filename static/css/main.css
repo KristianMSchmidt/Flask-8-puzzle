@@ -141,7 +141,7 @@ html {
 }
 
 .board > div.zero-tile {
-  background-color: white;
+  background-color: #e7f4f4;
 }
 
 .board.dim3 {
