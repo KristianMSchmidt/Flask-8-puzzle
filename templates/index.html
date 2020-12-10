@@ -14,15 +14,15 @@
     {% endif %}
     <br>
 </div>
-
 <div class="horizontal-flex-container">
     <div class="vertical-flex-container info">
         <h4>Solution algorithm</h4>
         <br>        
         {% for search_type in data["all_search_types"] %}
-            <label for="{{search_type}}" class="radiolabel">{{data["search_names"][search_type]}}</label>
+            {{data["search_names"][search_type]}}
             <input type="radio" class="selector" id="{{search_type}}" name="search_type" value="{{search_type}}">
-        {% endfor %}        
+        {% endfor %}     
+        <a href="/about">Please explain this</a>   
     </div>
     <div class="vertical-flex-container game-area">
         <h3 id="title">{{data["puzzle_title"]}}</h3>

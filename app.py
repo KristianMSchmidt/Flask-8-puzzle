@@ -20,7 +20,7 @@ def index():
 
     if request.method == 'GET':
         action = "new_sample"
-        puzzle_dim = 4  
+        puzzle_dim = 3  
         search_type = "gbfs"
         puzzle_type = "sample"
    
@@ -135,5 +135,9 @@ def index():
 def show_solution_string(solution_string):
     return str(convert_solution_string(solution_string))
 
+@app.route("/about")
+def about():
+    return render_template("about.html")
+    
 if __name__ == "__main__":
     app.run(debug=True)

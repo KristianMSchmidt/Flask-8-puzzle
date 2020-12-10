@@ -1,9 +1,9 @@
 /* Click Watch Sass in VSC when working on this file */
 
-$backgr-color: lightcyan;
-$tile-color: #55b4b0;
-$zero-tile-color: #e7f4f4;
-$button_color: lightgrey;
+$backgr-color: #efefef;
+$tile-color: #fe840e;
+$zero-tile-color: white;
+$button_color: white;
 
 // Set Text Color
 @function set-text-color($color) {
@@ -31,6 +31,8 @@ html {
   margin-bottom: 1.2em;
   margin-top: 0.5em;
   input {
+    background-color: $button_color;
+    color: set-text-color($button_color);
     margin-bottom: 0.5em;
     margin-top: 0.5em;
     height: 40px;
@@ -41,10 +43,6 @@ html {
   input:focus {
     /*outline: 3px dashed $tile_color;*/
     outline: none;
-  }
-  input:active {
-    background-color: $button_color;
-    color: set-text-color($button_color);
   }
 }
 
@@ -67,6 +65,8 @@ html {
     width: 160px;
     border-radius: 60px;
     font-size: 15px;
+    background-color: $button_color;
+    color: set-text-color($button_color);
   }
   h3 {
     margin-bottom: 0.5em;
@@ -75,10 +75,7 @@ html {
     /*outline: 3px dashed $tile_color;*/
     outline: none;
   }
-  input:active {
-    background-color: $button_color;
-    color: set-text-color($button_color);
-  }
+
   &.info {
     p {
       margin-left: 1em;
