@@ -1,7 +1,7 @@
 """
 Command-line demo of puzzle class and solution algorithms
 """
-from Puzzle import Puzzle
+from backend.Puzzle import Puzzle
 
 # Example 1: 3x3 puzzle
 def example1():
