@@ -11,6 +11,7 @@ document.getElementById(js_data["search_type"]).checked = true;
 if(js_data["show_solution_details"]){
     method_info = js_data["search_names"][js_data["search_type"]];
     document.getElementById("solution-method").innerHTML = method_info;
+    set_eventlistener_puzzle_solved()
 }
 
 // On small screens: If moves by arrow keys are made, scroll to this part of the DOM

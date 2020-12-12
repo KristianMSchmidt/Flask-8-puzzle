@@ -1,5 +1,5 @@
 function submit(){
-    js_data['animated_solution'] = []; // clear variable
+    //js_data['animated_solution'] = []; // clear variable
     document.getElementById("json_data").value = JSON.stringify(js_data);
     document.getElementById("form").submit();
 }
@@ -33,6 +33,7 @@ function set_eventlisteners(){
         submit();
     })
 
+
     function human_move(direction){
         js_data["direction"] = direction;
         js_data["requested_action"] = "human_move"
@@ -45,7 +46,12 @@ function set_eventlisteners(){
             if(js_data["puzzle_is_solved"]){
                 document.getElementById("status").innerHTML = "Puzzle already solved"
                 return
-            }         
+            } 
+            if((js_data["puzzle_dim"] == 4) && (js_data["search_type"]=="ast") &&
+               (js_data["puzzle_title"]=="Sample #5" || js_data["puzzle_title"]=="Sample #1" )){
+                alert("It will take too long time this particular puzzle by A*-search. Try Greedy Best-First Search instead") 
+                return
+            }    
             document.getElementById("status").innerHTML = "Searching...";
             js_data["requested_action"] = "solve_puzzle";
             document.getElementById("solve_reset_btn").value="Stop"
@@ -60,10 +66,6 @@ function set_eventlisteners(){
     for (let i = 0; i < js_data["all_search_types"].length; i++) {
         document.getElementById(js_data["all_search_types"][i]).addEventListener('change', event => {
             js_data["search_type"] = js_data["all_search_types"][i];
-            if((js_data["puzzle_dim"] == 4) && (js_data["search_type"]=="ast")){
-                    alert("Warning: I might take several minutes to solve some of the 15-puzzles by A*-Search")
-            }
-        
         })
     }
                 
@@ -89,4 +91,11 @@ function set_eventlisteners(){
             break;
         }
     }); 
+}
+
+function set_eventlistener_puzzle_solved(){
+    document.getElementById("show_solution_string_link").addEventListener('click', event => {
+    document.getElementById("json_data2").value = JSON.stringify(js_data);
+    document.getElementById("moves_form").submit();
+    })
 }
