@@ -6,7 +6,7 @@
 }
 
 html {
-  background-color: lightcyan;
+  background-color: #efefef;
   color: #000;
 }
 
@@ -18,6 +18,8 @@ html {
 }
 
 .title-area input {
+  background-color: white;
+  color: #000;
   margin-bottom: 0.5em;
   margin-top: 0.5em;
   height: 40px;
@@ -29,11 +31,6 @@ html {
 .title-area input:focus {
   /*outline: 3px dashed $tile_color;*/
   outline: none;
-}
-
-.title-area input:active {
-  background-color: lightgrey;
-  color: #000;
 }
 
 .horizontal-flex-container {
@@ -73,6 +70,8 @@ html {
   width: 160px;
   border-radius: 60px;
   font-size: 15px;
+  background-color: white;
+  color: #000;
 }
 
 .vertical-flex-container h3 {
@@ -82,11 +81,6 @@ html {
 .vertical-flex-container input:focus {
   /*outline: 3px dashed $tile_color;*/
   outline: none;
-}
-
-.vertical-flex-container input:active {
-  background-color: lightgrey;
-  color: #000;
 }
 
 .vertical-flex-container.info p {
@@ -127,7 +121,7 @@ html {
   gap: 0;
   width: 180px;
   height: 180px;
-  background-color: #55b4b0;
+  background-color: #fe840e;
   color: #000;
 }
 
@@ -141,7 +135,7 @@ html {
 }
 
 .board > div.zero-tile {
-  background-color: #e7f4f4;
+  background-color: white;
 }
 
 .board.dim3 {

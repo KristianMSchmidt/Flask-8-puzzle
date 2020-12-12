@@ -20,9 +20,11 @@
         <h4>Solution algorithm</h4>
         <br>        
         {% for search_type in data["all_search_types"] %}
-            <label for="{{search_type}}" class="radiolabel">{{data["search_names"][search_type]}}</label>
+            {{data["search_names"][search_type]}}
             <input type="radio" class="selector" id="{{search_type}}" name="search_type" value="{{search_type}}">
-        {% endfor %}        
+        {% endfor %}     
+        <br>
+        <a href="/about" target ="_blank">What is this?</a>   
     </div>
     <div class="vertical-flex-container game-area">
         <h3 id="title">{{data["puzzle_title"]}}</h3>
@@ -51,8 +53,7 @@
             <p class="h6">Basics:</p>
             <p id="solution-method"></p>   
             <p>#Moves in solution:
-                <a href={{url_for('show_solution_string', solution_string=data['solution_string'])}}>
-                {{data["num_solution_steps"]}}</a>
+                <a id="show_solution_string_link" href="#">{{data["num_solution_steps"]}}</a>
             </p> 
             <p>Running time: {{data["running_time"]}}s</p>
             <p class="h6">Nerd stuff:</p>
@@ -102,6 +103,11 @@
 <form method="post" action="{{ url_for('index') }}" id="form">
     <input type="hidden" name="json_data" id="json_data" value = "">
 </form>
+
+<form method="post" action="{{ url_for('moves') }}" target ="_blank" id="moves_form">
+    <input type="hidden" name="json_data" id="json_data2" value = "">
+</form>
+
 
 <script>js_data = JSON.parse('{{ data | tojson | safe}}')</script>  
 <script src="../static/js/eventlisteners.js"></script>

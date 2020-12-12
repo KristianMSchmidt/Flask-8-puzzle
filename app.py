@@ -17,11 +17,11 @@ app = Flask('__name__')
 
 @app.route("/", methods=['GET', 'POST'])
 def index():
-
+    
     if request.method == 'GET':
         action = "new_sample"
-        puzzle_dim = 4  
-        search_type = "gbfs"
+        puzzle_dim = 3  
+        search_type = "ast"
         puzzle_type = "sample"
    
     else: 
@@ -53,7 +53,7 @@ def index():
             all_search_types = ["ast", "gbfs", "bfs", "dfs"]
  
         elif puzzle_dim == 4:
-            all_search_types = ["ast", "gbfs"]        
+            all_search_types = ['ast','gbfs']
 
         data = {
             "puzzle_title": puzzle_title,
@@ -109,7 +109,6 @@ def index():
             data["solve_or_reset_btn_value"] = "Reset Sample"
         else: 
             data["solve_or_reset_btn_value"] = "Reset Custom"
-
         
         # Compute all board positions on the road to solution:
         puzzle_clone = puzzle.clone()
@@ -128,12 +127,17 @@ def index():
         data["puzzle"] = data["original_puzzle"]
         if data["puzzle_type"] == "sample":
             data["move_count"] = 0         
-
+    
     return render_template("index.html", data = data)
 
-@app.route('/<solution_string>')
-def show_solution_string(solution_string):
-    return str(convert_solution_string(solution_string))
+@app.route("/about")
+def about():
+    return render_template("about.html")
+
+@app.route("/moves", methods=['POST'])
+def moves():
+    data = json.loads(request.form["json_data"])   
+    return str(convert_solution_string(data["solution_string"]))  
 
 if __name__ == "__main__":
     app.run(debug=True)
