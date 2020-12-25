@@ -1,25 +1,41 @@
-
-<h2>About the search algorithms</h2>
-<p>The puzzles are solved real time by an algorithm on the server. You can choose between four different search algorithms:</p>
-
-<h4>Breadth-First Search</h4>
-<p>Breadth-first search is guaranteed to find a solution to the puzzle that involved the fewest possible number of moves.
-However, it is an 'uninformed' kind of search, exploring all possible directions blindly, and hence takes a long time to find a solution.
-The running time is not too bad for 8-puzzles, but breadh-first search is to slow for the more complicated 15-puzzles. Read <a href="https://en.wikipedia.org/wiki/Breadth-first_search">more</a>. </p>
-
-<h4>Greedy Best-First Search</h4>
-Greedy best-first search is a nice choice if you simply want to find a solution to a puzzle as quickly (short time) as possible, without caring too much if the found solution is also the shortest one measured in
-number of moves. The search is 'informed'; it is guided by a heuristic function that can estimate the "distance" to the solved puzzle from any given state of the puzzle. At each
-stage of the search, greedy best-first search chooses the direction that seems to lead to the solution in as few moves a possible <i>from the current vantage point</i>. Read <a href="https://www.javatpoint.com/ai-informed-search-algorithms">more</a>.
-
-<h4>A*-Search</h4>  
-Like breadth-first search, A*-search is guaranteed to find a solution with the shortest possible number of moves. But it usually does this way faster than breath-first search. In my implementation, it is 
-guided by the same heuristic function as greedy best-first search, but unlike greedy best-first search it does not simply
-select the path that looks shortest at the moment, but also considers the number of moves made in the past to get to the current state. 
-Read <a href="https://en.wikipedia.org/wiki/A*_search_algorithm">more</a>. 
-
-<h4>Depth-First Search</h4>
-Depth-first search in an uninformed kind of search that keeps searching in one direction, making the solution path longer and longer, untill it either reaches the goal or a dead end. Depth-first search can be
-useful in many situations, but it is really a quite stupid strategy for solving 8- or 15-puzzles. It takes a long time, and the found solutions
-usually involves ridiculously many moves. I've only included it to highlight 
-the qualities of the other search types. Read <a href="https://en.wikipedia.org/wiki/Depth-first_search">more</a>.
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            margin: 20px;
+            margin-right: 100px;
+        }
+    </style>
+</head>
+<body>
+    <h2>About the search algorithms</h2>
+    <p>The puzzles are solved real time by an algorithm on the server. You can choose between four different search algorithms:</p>
+    
+    <h4>Breadth-First Search</h4>
+    <p>Breadth-first search is guaranteed to find a solution to the puzzle that involved the fewest possible number of moves.
+    However, it is an 'uninformed' kind of search, exploring all possible directions blindly, and hence takes a long time to find a solution.
+    The running time is not too bad for 8-puzzles, but breadh-first search is to slow for the more complicated 15-puzzles. Read <a href="https://en.wikipedia.org/wiki/Breadth-first_search">more</a>. </p>
+    
+    <h4>Greedy Best-First Search</h4>
+    Greedy best-first search is a nice choice if you simply want to find a solution to a puzzle as quickly (short time) as possible, without caring too much if the found solution is also the shortest one measured in
+    number of moves. The search is 'informed'; it is guided by a heuristic function that can estimate the "distance" to the solved puzzle from any given state of the puzzle. At each
+    stage of the search, greedy best-first search chooses the direction that seems to lead to the solution in as few moves a possible <i>from the current vantage point</i>. Read <a href="https://www.javatpoint.com/ai-informed-search-algorithms">more</a>.
+    
+    <h4>A*-Search</h4>  
+    Like breadth-first search, A*-search is guaranteed to find a solution with the shortest possible number of moves. But it usually does this way faster than breath-first search. In my implementation, it is 
+    guided by the same heuristic function as greedy best-first search, but unlike greedy best-first search it does not simply
+    select the path that looks shortest at the moment, but also considers the number of moves made in the past to get to the current state. 
+    Read <a href="https://en.wikipedia.org/wiki/A*_search_algorithm">more</a>. 
+    
+    <h4>Depth-First Search</h4>
+    Depth-first search in an uninformed kind of search that keeps searching in one direction, making the solution path longer and longer, untill it either reaches the goal or a dead end. Depth-first search can be
+    useful in many situations, but it is really a quite stupid strategy for solving 8- or 15-puzzles. It takes a long time, and the found solutions
+    usually involves ridiculously many moves. I've only included it to highlight 
+    the qualities of the other search types. Read <a href="https://en.wikipedia.org/wiki/Depth-first_search">more</a>.
+        
+</body>
+</html>
