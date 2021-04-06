@@ -5,3 +5,6 @@ This web app can solve classic 8-puzzles and 15-puzzles by various search algori
 Info from the backend solution process such as running time and the number of moves in the found solutions is rendered to the user, making the app a nice demonstration of the strengths and weaknesses of the different search algorithms.
 
 http://kristianmschmidt.pythonanywhere.com/puzzle
+
+
+I originally made a version of the backend to this project as an assignment to the online 'micro-master in Artificial intelligence' at Columbia University. Since then I've fine-tuned the algorithms, designed a responsive front-end and put it all together using Flask. 
