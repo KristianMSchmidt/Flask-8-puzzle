@@ -393,7 +393,7 @@ if do_slow_tests:
                 self.assertTrue(len(path_to_goal) > 0)
                 self.assertTrue(max_search_depth >= len(path_to_goal))
                 self.assertTrue(num_expanded_nodes >= max_search_depth)
-            print(time.time() - start_time)
+            #print(time.time() - start_time)
 if __name__ == '__main__':
     unittest.main()
     

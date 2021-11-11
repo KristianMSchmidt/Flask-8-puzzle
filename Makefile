@@ -17,9 +17,8 @@ develop:  ## Build or rebuild development docker image
 
 
 # ---------- Testing ---------- #
-test: ## Run test suite
-	python unit_tests.py
-
+test: ## Run backend test suite
+	python backend/unit_tests.py
 
 # ---------- Production ---------- #
 production_stop: ## Stop production server
