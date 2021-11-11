@@ -1,0 +1,21 @@
+version: "3.8"
+services:
+  app:
+    build: .
+    command: python app.py
+    volumes:
+      - .:/code
+
+    networks:
+      - reverse-proxy_proxynet
+  
+    environment:
+      - VIRTUAL_HOST=puzzle.kristianms.com
+      - VIRTUAL_PORT=5000 # <-- since I run flask on port 5000  
+      - LETSENCRYPT_HOST=puzzle.kristianms.com
+      - LETSENCRYPT_EMAIL=kmollerschmidt@gmail.com
+      - url=https://puzzle.kristianms.com
+
+networks:
+  reverse-proxy_proxynet:
+    external: true
